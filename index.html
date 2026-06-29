@@ -2,155 +2,192 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>게임 명중 계산기</title>
+    <title>뱀피르 효율 계산기 - 종합</title>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; }
-        h2 { text-align: center; color: #007bff; }
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; margin: 0; }
+        h2 { text-align: center; color: #cc0000; margin-top: 20px; } /* 뱀피르 느낌에 맞춰 붉은 계열 포인트 */
+        
+        /* ── 상단 탭 메뉴 스타일 ── */
+        .tab-menu { display: flex; justify-content: center; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; }
+        .tab-btn { background: none; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
+        .tab-btn:hover { color: #cc0000; }
+        /* 활성화된 탭 하이라이트 효과 */
+        .tab-btn.active { color: #cc0000; border-bottom: 3px solid #cc0000; }
+
+        /* ── 콘텐츠 영역 스타일 ── */
+        .tab-content { display: none; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; } /* 선택된 탭만 화면에 표시 */
+
+        /* 애니메이션 효과 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── 명중 계산기 내부 디자인 ── */
         .notice { text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
-        
-        /* 메인 컨테이너 레이아웃 (왼쪽 입력, 오른쪽 표) */
-        .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; max-width: 1200px; margin: 0 auto; }
-        
-        /* 왼쪽 입력 테이블 스타일 */
+        .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; }
         .input-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .input-table, .boss-table { border-collapse: collapse; margin-bottom: 15px; }
         .input-table th, .input-table td, .boss-table th, .boss-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
-        
         .input-table th { width: 120px; background: #fff; }
-        .input-table td { width: 100px; background: #fce4d6; } /* 살색 채우기 */
+        .input-table td { width: 100px; background: #fce4d6; }
         .input-table input { width: 80%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
-        
         .total-row { background: #fff !important; }
         .total-box { font-size: 18px; color: #000; }
-
-        /* 계산 버튼 */
-        .calc-btn { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .calc-btn:hover { background: #0056b3; }
-
-        /* 오른쪽 보스 표 스타일 */
+        .calc-btn { width: 100%; padding: 12px; background: #cc0000; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .calc-btn:hover { background: #990000; }
         .boss-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .th-world { background: #ffc000; }
         .th-gehenna2 { background: #92d050; }
         .th-gehenna3 { background: #5b9bd5; color: white; }
-        
-        /* 보스 셀 기본 스타일 (회색조로 대기) */
         .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
-        
-        /* 갈 수 있을 때 켜지는 활성화 색상 */
         .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
+        
+        /* 임시 안내 박스 스타일 */
+        .dummy-box { background: white; padding: 40px; text-align: center; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 18px; color: #666; }
     </style>
 </head>
 <body>
 
-    <h2>🎯 내 게임 명중 계산 시트</h2>
-    <div class="notice">살색 칸에만 입력한 후 하단의 계산 버튼을 눌러주세요.</div>
-    
-    <div class="container">
-        
-        <!-- 왼쪽: 입력 영역 -->
-        <div class="input-section">
-            <table class="input-table">
-                <tr>
-                    <th>명중</th>
-                    <td><input type="number" id="stat1" value="0" oninput="calculateTotal()"></td>
-                </tr>
-                <tr>
-                    <th>클래스 명중</th>
-                    <td><input type="number" id="stat2" value="0" oninput="calculateTotal()"></td>
-                </tr>
-                <tr>
-                    <th>일명 or 스명</th>
-                    <td><input type="number" id="stat3" value="0" oninput="calculateTotal()"></td>
-                </tr>
-                <tr>
-                    <th>보스 명중</th>
-                    <td><input type="number" id="stat4" value="0" oninput="calculateTotal()"></td>
-                </tr>
-                <tr class="total-row">
-                    <th>합계</th>
-                    <td id="totalBox" class="total-box">0</td>
-                </tr>
-            </table>
-            <button class="calc-btn" onclick="checkBosses()">입장 가능 던전 확인 ⚡</button>
-        </div>
-        
-        <!-- 오른쪽: 보스 표 영역 -->
-        <div class="boss-section">
-            <table class="boss-table">
-                <thead>
-                    <tr>
-                        <th class="th-world" style="width: 160px;">월드 보스</th>
-                        <th class="th-gehenna2" style="width: 160px;">게헨나 2구역</th>
-                        <th class="th-gehenna3" style="width: 160px;">게헨나 3구역</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="boss-cell" data-cut="480">브라키움(480)</td>
-                        <td class="boss-cell" data-cut="600">카심(600)</td>
-                        <td class="boss-cell" data-cut="1350">바르젤린(1350)</td>
-                    </tr>
-                    <tr>
-                        <td class="boss-cell" data-cut="550">클레마무스(550)</td>
-                        <td class="boss-cell" data-cut="830">레물루스(830)</td>
-                        <td class="boss-cell" data-cut="1650">라파(1650)</td>
-                    </tr>
-                    <tr>
-                        <td class="boss-cell" data-cut="800">데세르티(800)</td>
-                        <td class="boss-cell" data-cut="1027">겔텐(1027)</td>
-                        <td class="boss-cell" data-cut="2030">팔리츠(2030)</td>
-                    </tr>
-                    <tr>
-                        <td class="boss-cell" data-cut="1000">엑세사(1000)</td>
-                        <td class="boss-cell" data-cut="1100">에노크(1100)</td>
-                        <td class="boss-cell" data-cut="2250">마슈미드(2250)</td>
-                    </tr>
-                    <tr>
-                        <td class="boss-cell" data-cut="1220">유서파트르(1220)</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="boss-cell" data-cut="1395">오르세카(1395)</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="boss-cell" data-cut="2050">인페르누스(2050)</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
+    <h2>🧛‍♂️ 뱀피르 효율 분석기</h2>
+
+    <!-- ── 1. 상단 탭 버튼들 ── -->
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="openTab('accuracy')">🎯 명중 계산</button>
+        <button class="tab-btn" onclick="openTab('weekly')">🎁 주간 패키지</button>
+        <button class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
     </div>
 
+    <!-- ── 2. 각 탭의 콘텐츠들 ── -->
+    
+    <!-- [명중 계산 탭] -->
+    <div id="accuracy" class="tab-content active">
+        <div class="notice">살색 칸에만 입력한 후 하단의 계산 버튼을 눌러주세요.</div>
+        
+        <div class="container">
+            <!-- 왼쪽: 입력 영역 -->
+            <div class="input-section">
+                <table class="input-table">
+                    <tr>
+                        <th>명중</th>
+                        <td><input type="number" id="stat1" value="0" oninput="calculateTotal()"></td>
+                    </tr>
+                    <tr>
+                        <th>클래스 명중</th>
+                        <td><input type="number" id="stat2" value="0" oninput="calculateTotal()"></td>
+                    </tr>
+                    <tr>
+                        <th>일명 or 스명</th>
+                        <td><input type="number" id="stat3" value="0" oninput="calculateTotal()"></td>
+                    </tr>
+                    <tr>
+                        <th>보스 명중</th>
+                        <td><input type="number" id="stat4" value="0" oninput="calculateTotal()"></td>
+                    </tr>
+                    <tr class="total-row">
+                        <th>합계</th>
+                        <td id="totalBox" class="total-box">0</td>
+                    </tr>
+                </table>
+                <button class="calc-btn" onclick="checkBosses()">입장 가능 던전 확인 ⚡</button>
+            </div>
+            
+            <!-- 오른쪽: 보스 표 영역 -->
+            <div class="boss-section">
+                <table class="boss-table">
+                    <thead>
+                        <tr>
+                            <th class="th-world" style="width: 160px;">월드 보스</th>
+                            <th class="th-gehenna2" style="width: 160px;">게헨나 2구역</th>
+                            <th class="th-gehenna3" style="width: 160px;">게헨나 3구역</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="boss-cell" data-cut="480">브라키움(480)</td>
+                            <td class="boss-cell" data-cut="600">카심(600)</td>
+                            <td class="boss-cell" data-cut="1350">바르젤린(1350)</td>
+                        </tr>
+                        <tr>
+                            <td class="boss-cell" data-cut="550">클레마무스(550)</td>
+                            <td class="boss-cell" data-cut="830">레물루스(830)</td>
+                            <td class="boss-cell" data-cut="1650">라파(1650)</td>
+                        </tr>
+                        <tr>
+                            <td class="boss-cell" data-cut="800">데세르티(800)</td>
+                            <td class="boss-cell" data-cut="1027">겔텐(1027)</td>
+                            <td class="boss-cell" data-cut="2030">팔리츠(2030)</td>
+                        </tr>
+                        <tr>
+                            <td class="boss-cell" data-cut="1000">엑세사(1000)</td>
+                            <td class="boss-cell" data-cut="1100">에노크(1100)</td>
+                            <td class="boss-cell" data-cut="2250">마슈미드(2250)</td>
+                        </tr>
+                        <tr>
+                            <td class="boss-cell" data-cut="1220">유서파트르(1220)</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="boss-cell" data-cut="1395">오르세카(1395)</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="boss-cell" data-cut="2050">인페르누스(2050)</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- [주간 패키지 탭] -->
+    <div id="weekly" class="tab-content">
+        <div class="dummy-box">
+            <h3>🎁 뱀피르 주간 패키지 효율 비교</h3>
+            <p>여기에 나중에 패키지 효율 분석이나 재화 가치 계산 기능을 추가할 예정입니다!</p>
+        </div>
+    </div>
+
+    <!-- [설정 탭] -->
+    <div id="settings" class="tab-content">
+        <div class="dummy-box">
+            <h3>⚙ 설정 페이지</h3>
+            <p>여기에 가치 계산용 게임 내 재화 단가 설정이나 데이터 저장 기능을 넣을 수 있습니다.</p>
+        </div>
+    </div>
+
+    <!-- ── 3. 자바스크립트 수식 및 탭 전환 기능 ── -->
     <script>
-        // 숫자가 입력될 때마다 실시간으로 합계를 계산해주는 함수
+        function openTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
         function calculateTotal() {
             const s1 = Number(document.getElementById('stat1').value) || 0;
             const s2 = Number(document.getElementById('stat2').value) || 0;
             const s3 = Number(document.getElementById('stat3').value) || 0;
             const s4 = Number(document.getElementById('stat4').value) || 0;
-            
             const total = s1 + s2 + s3 + s4;
             document.getElementById('totalBox').innerText = total;
         }
 
-        // 버튼을 누르면 합계와 보스 컷을 비교해서 색칠해주는 함수
         function checkBosses() {
-            // 현재 합계 가져오기
             const currentTotal = Number(document.getElementById('totalBox').innerText);
-            
-            // 모든 보스 셀들을 싹 다 긁어오기
             const bossCells = document.querySelectorAll('.boss-cell');
-            
             bossCells.forEach(cell => {
-                // 각 셀에 심어둔 명중 커트라인 숫자 가져오기 (data-cut 값)
                 const bossCut = Number(cell.getAttribute('data-cut'));
-                
-                // 내 명중 합계가 보스 컷보다 크거나 같으면 active 클래스 붙여서 초록색 켜기
                 if (currentTotal >= bossCut) {
                     cell.classList.add('active');
                 } else {
