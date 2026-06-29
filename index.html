@@ -87,10 +87,10 @@
 
     <!-- 상단 탭 메뉴 -->
     <div class="tab-menu">
-        <button class="tab-btn" onclick="openTab('accuracy')">🎯 명중 계산</button>
-        <button class="tab-btn active" onclick="openTab('gacha')">🎰 뽑기 시뮬레이터</button>
-        <button class="tab-btn" onclick="openTab('weekly')">🎁 주간 패키지</button>
-        <button class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
+        <button id="btn-accuracy" class="tab-btn" onclick="openTab('accuracy')">🎯 명중 계산</button>
+        <button id="btn-gacha" class="tab-btn active" onclick="openTab('gacha')">🎰 뽑기 시뮬레이터</button>
+        <button id="btn-weekly" class="tab-btn" onclick="openTab('weekly')">🎁 주간 패키지</button>
+        <button id="btn-settings" class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
     </div>
 
     <!-- ── 각 탭의 콘텐츠들 ── -->
@@ -166,5 +166,3 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td class="boss-cell" data-cut="2050">인페르누스(2050)</td>
-                            <td></td>
