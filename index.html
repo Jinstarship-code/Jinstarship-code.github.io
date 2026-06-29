@@ -5,20 +5,18 @@
     <title>뱀피르 효율 계산기 - 종합</title>
     <style>
         body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; margin: 0; }
-        h2 { text-align: center; color: #cc0000; margin-top: 20px; } /* 뱀피르 느낌에 맞춰 붉은 계열 포인트 */
+        h2 { text-align: center; color: #cc0000; margin-top: 20px; }
         
         /* ── 상단 탭 메뉴 스타일 ── */
         .tab-menu { display: flex; justify-content: center; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; }
         .tab-btn { background: none; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
         .tab-btn:hover { color: #cc0000; }
-        /* 활성화된 탭 하이라이트 효과 */
         .tab-btn.active { color: #cc0000; border-bottom: 3px solid #cc0000; }
 
         /* ── 콘텐츠 영역 스타일 ── */
         .tab-content { display: none; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; } /* 선택된 탭만 화면에 표시 */
+        .tab-content.active { display: block; }
 
-        /* 애니메이션 효과 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -44,29 +42,63 @@
         .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
         .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
         
-        /* 임시 안내 박스 스타일 */
-        .dummy-box { background: white; padding: 40px; text-align: center; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 18px; color: #666; }
+        /* 공통 안내 박스 스타일 */
+        .dummy-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 18px; color: #666; max-width: 600px; margin: 0 auto; text-align: center; }
+
+        /* ── 🎰 뽑기 시뮬레이터 디자인 ── */
+        .gacha-container { max-width: 750px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        .gacha-buttons { margin-bottom: 25px; }
+        .gacha-btn { padding: 15px 35px; font-size: 18px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; background: #cc0000; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .gacha-btn:hover { background: #990000; }
+        
+        /* 11회 뽑기가 바둑판(Grid) 형태로 정렬되는 결과창 */
+        .gacha-result { min-height: 200px; border: 2px dashed #ccc; border-radius: 8px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; justify-content: center; background: #fafafa; }
+        .gacha-item { padding: 20px 10px; border-radius: 6px; font-weight: bold; font-size: 15px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        
+        /* ── 🌟 요청하신 등급별 커스텀 색상 매칭 세팅 ── */
+        .grade-legendary { background: #fffdf0; color: #b58900; border: 2px solid #ffc107; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); font-size: 16px; } /* 전설: 금색 */
+        .grade-epic      { background: #fbf0ff; color: #6f42c1; border: 2px solid #6f42c1; box-shadow: 0 0 10px rgba(111, 66, 193, 0.5); } /* 영웅: 보라색 */
+        .grade-rare      { background: #e0f7fa; color: #00838f; border: 2px solid #00bcd4; } /* 희귀: 하늘색 */
+        .grade-advanced  { background: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50; } /* 고급: 초록색 */
+        .grade-normal    { background: #f5f5f5; color: #757575; border: 1px solid #e0e0e0; } /* 일반: 회색 */
+
+        /* 순차적으로 퐁퐁 나타나는 등장 애니메이션 딜레이 효과 */
+        .gacha-item:nth-child(1)  { animation-delay: 0.05s; }
+        .gacha-item:nth-child(2)  { animation-delay: 0.10s; }
+        .gacha-item:nth-child(3)  { animation-delay: 0.15s; }
+        .gacha-item:nth-child(4)  { animation-delay: 0.20s; }
+        .gacha-item:nth-child(5)  { animation-delay: 0.25s; }
+        .gacha-item:nth-child(6)  { animation-delay: 0.30s; }
+        .gacha-item:nth-child(7)  { animation-delay: 0.35s; }
+        .gacha-item:nth-child(8)  { animation-delay: 0.40s; }
+        .gacha-item:nth-child(9)  { animation-delay: 0.45s; }
+        .gacha-item:nth-child(10) { animation-delay: 0.50s; }
+        .gacha-item:nth-child(11) { animation-delay: 0.55s; }
+
+        @keyframes popIn {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
     <h2>🧛‍♂️ 뱀피르 효율 분석기</h2>
 
-    <!-- ── 1. 상단 탭 버튼들 ── -->
+    <!-- 상단 탭 메뉴 -->
     <div class="tab-menu">
-        <button class="tab-btn active" onclick="openTab('accuracy')">🎯 명중 계산</button>
+        <button class="tab-btn" onclick="openTab('accuracy')">🎯 명중 계산</button>
+        <button class="tab-btn active" onclick="openTab('gacha')">🎰 뽑기 시뮬레이터</button>
         <button class="tab-btn" onclick="openTab('weekly')">🎁 주간 패키지</button>
         <button class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
     </div>
 
-    <!-- ── 2. 각 탭의 콘텐츠들 ── -->
+    <!-- ── 각 탭의 콘텐츠들 ── -->
     
     <!-- [명중 계산 탭] -->
-    <div id="accuracy" class="tab-content active">
-        <div class="notice">숫자를 입력한 후 하단의 계산 버튼을 눌러주세요.</div>
-        
+    <div id="accuracy" class="tab-content">
+        <div class="notice">살색 칸에만 입력한 후 하단의 계산 버튼을 눌러주세요.</div>
         <div class="container">
-            <!-- 왼쪽: 입력 영역 -->
             <div class="input-section">
                 <table class="input-table">
                     <tr>
@@ -90,10 +122,9 @@
                         <td id="totalBox" class="total-box">0</td>
                     </tr>
                 </table>
-                <button class="calc-btn" onclick="checkBosses()">명중 계산 ⚡</button>
+                <button class="calc-btn" onclick="checkBosses()">입장 가능 던전 확인 ⚡</button>
             </div>
             
-            <!-- 오른쪽: 보스 표 영역 -->
             <div class="boss-section">
                 <table class="boss-table">
                     <thead>
@@ -137,65 +168,3 @@
                         <tr>
                             <td class="boss-cell" data-cut="2050">인페르누스(2050)</td>
                             <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- [주간 패키지 탭] -->
-    <div id="weekly" class="tab-content">
-        <div class="dummy-box">
-            <h3>🎁 뱀피르 주간 패키지 효율 비교</h3>
-            <p>여기에 나중에 패키지 효율 분석이나 재화 가치 계산 기능을 추가할 예정입니다!</p>
-        </div>
-    </div>
-
-    <!-- [설정 탭] -->
-    <div id="settings" class="tab-content">
-        <div class="dummy-box">
-            <h3>⚙ 설정 페이지</h3>
-            <p>여기에 가치 계산용 게임 내 재화 단가 설정이나 데이터 저장 기능을 넣을 수 있습니다.</p>
-        </div>
-    </div>
-
-    <!-- ── 3. 자바스크립트 수식 및 탭 전환 기능 ── -->
-    <script>
-        function openTab(tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
-            
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        function calculateTotal() {
-            const s1 = Number(document.getElementById('stat1').value) || 0;
-            const s2 = Number(document.getElementById('stat2').value) || 0;
-            const s3 = Number(document.getElementById('stat3').value) || 0;
-            const s4 = Number(document.getElementById('stat4').value) || 0;
-            const total = s1 + s2 + s3 + s4;
-            document.getElementById('totalBox').innerText = total;
-        }
-
-        function checkBosses() {
-            const currentTotal = Number(document.getElementById('totalBox').innerText);
-            const bossCells = document.querySelectorAll('.boss-cell');
-            bossCells.forEach(cell => {
-                const bossCut = Number(cell.getAttribute('data-cut'));
-                if (currentTotal >= bossCut) {
-                    cell.classList.add('active');
-                } else {
-                    cell.classList.remove('active');
-                }
-            });
-        }
-    </script>
-
-</body>
-</html>
