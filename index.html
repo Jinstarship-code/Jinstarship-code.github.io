@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게임 명중 계산기</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; }
+        h2 { text-align: center; color: #007bff; }
+        .notice { text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
+        
+        /* 메인 컨테이너 레이아웃 (왼쪽 입력, 오른쪽 표) */
+        .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; max-width: 1200px; margin: 0 auto; }
+        
+        /* 왼쪽 입력 테이블 스타일 */
+        .input-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .input-table, .boss-table { border-collapse: collapse; margin-bottom: 15px; }
+        .input-table th, .input-table td, .boss-table th, .boss-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
+        
+        .input-table th { width: 120px; background: #fff; }
+        .input-table td { width: 100px; background: #fce4d6; } /* 살색 채우기 */
+        .input-table input { width: 80%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
+        
+        .total-row { background: #fff !important; }
+        .total-box { font-size: 18px; color: #000; }
+
+        /* 계산 버튼 */
+        .calc-btn { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .calc-btn:hover { background: #0056b3; }
+
+        /* 오른쪽 보스 표 스타일 */
+        .boss-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .th-world { background: #ffc000; }
+        .th-gehenna2 { background: #92d050; }
+        .th-gehenna3 { background: #5b9bd5; color: white; }
+        
+        /* 보스 셀 기본 스타일 (회색조로 대기) */
+        .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
+        
+        /* 갈 수 있을 때 켜지는 활성화 색상 */
+        .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
+    </style>
+</head>
+<body>
+
+    <h2>🎯 내 게임 명중 계산 시트</h2>
+    <div class="notice">살색 칸에만 입력한 후 하단의 계산 버튼을 눌러주세요.</div>
+    
+    <div class="container">
+        
+        <!-- 왼쪽: 입력 영역 -->
+        <div class="input-section">
+            <table class="input-table">
+                <tr>
+                    <th>명중</th>
+                    <td><input type="number" id="stat1" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr>
+                    <th>클래스 명중</th>
+                    <td><input type="number" id="stat2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr>
+                    <th>일명 or 스명</th>
+                    <td><input type="number" id="stat3" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr>
+                    <th>보스 명중</th>
+                    <td><input type="number" id="stat4" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr class="total-row">
+                    <th>합계</th>
+                    <td id="totalBox" class="total-box">0</td>
+                </tr>
+            </table>
+            <button class="calc-btn" onclick="checkBosses()">입장 가능 던전 확인 ⚡</button>
+        </div>
+        
+        <!-- 오른쪽: 보스 표 영역 -->
+        <div class="boss-section">
+            <table class="boss-table">
+                <thead>
+                    <tr>
+                        <th class="th-world" style="width: 160px;">월드 보스</th>
+                        <th class="th-gehenna2" style="width: 160px;">게헨나 2구역</th>
+                        <th class="th-gehenna3" style="width: 160px;">게헨나 3구역</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="boss-cell" data-cut="480">브라키움(480)</td>
+                        <td class="boss-cell" data-cut="600">카심(600)</td>
+                        <td class="boss-cell" data-cut="1350">바르젤린(1350)</td>
+                    </tr>
+                    <tr>
+                        <td class="boss-cell" data-cut="550">클레마무스(550)</td>
+                        <td class="boss-cell" data-cut="830">레물루스(830)</td>
+                        <td class="boss-cell" data-cut="1650">라파(1650)</td>
+                    </tr>
+                    <tr>
+                        <td class="boss-cell" data-cut="800">데세르티(800)</td>
+                        <td class="boss-cell" data-cut="1027">겔텐(1027)</td>
+                        <td class="boss-cell" data-cut="2030">팔리츠(2030)</td>
+                    </tr>
+                    <tr>
+                        <td class="boss-cell" data-cut="1000">엑세사(1000)</td>
+                        <td class="boss-cell" data-cut="1100">에노크(1100)</td>
+                        <td class="boss-cell" data-cut="2250">마슈미드(2250)</td>
+                    </tr>
+                    <tr>
+                        <td class="boss-cell" data-cut="1220">유서파트르(1220)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="boss-cell" data-cut="1395">오르세카(1395)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="boss-cell" data-cut="2050">인페르누스(2050)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+    <script>
+        // 숫자가 입력될 때마다 실시간으로 합계를 계산해주는 함수
+        function calculateTotal() {
+            const s1 = Number(document.getElementById('stat1').value) || 0;
+            const s2 = Number(document.getElementById('stat2').value) || 0;
+            const s3 = Number(document.getElementById('stat3').value) || 0;
+            const s4 = Number(document.getElementById('stat4').value) || 0;
+            
+            const total = s1 + s2 + s3 + s4;
+            document.getElementById('totalBox').innerText = total;
+        }
+
+        // 버튼을 누르면 합계와 보스 컷을 비교해서 색칠해주는 함수
+        function checkBosses() {
+            // 현재 합계 가져오기
+            const currentTotal = Number(document.getElementById('totalBox').innerText);
+            
+            // 모든 보스 셀들을 싹 다 긁어오기
+            const bossCells = document.querySelectorAll('.boss-cell');
+            
+            bossCells.forEach(cell => {
+                // 각 셀에 심어둔 명중 커트라인 숫자 가져오기 (data-cut 값)
+                const bossCut = Number(cell.getAttribute('data-cut'));
+                
+                // 내 명중 합계가 보스 컷보다 크거나 같으면 active 클래스 붙여서 초록색 켜기
+                if (currentTotal >= bossCut) {
+                    cell.classList.add('active');
+                } else {
+                    cell.classList.remove('active');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
