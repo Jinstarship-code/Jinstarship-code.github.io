@@ -82,7 +82,7 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td class="boss-cell" data-cut="1395">오르세ка(1395)</td>
+                            <td class="boss-cell" data-cut="1395">오르세카(1395)</td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -139,22 +139,20 @@
 
     <!-- [설정 탭] -->
     <div id="settings" class="tab-content">
-        <div class="notice">게임 내 시장 단가를 입력해 두면 패키지 탭에 실시간 적용됩니다.</div>
+        <div class="notice">고정된 재화 단가 리스트입니다. 패키지 탭에 실시간 적용됩니다.</div>
         <div class="container" style="max-width: 600px;">
             <div class="settings-section" style="width: 100%;">
                 <h3>💎 재화 가치 기준 설정 (원/개당)</h3>
                 <table class="cfg-table">
                     <tr>
                         <th>1다이아 당 가치(원)</th>
-                        <!-- 고정값 처리를 위해 readonly 속성 부여 및 스타일 조정 -->
-                        <td><input type="number" id="cfg-dia-price" value="13.75" readonly style="color: #666; cursor: not-allowed;"></td>
+                        <td><input type="number" id="cfg-dia-price" value="13.75" readonly style="color: #666;"></td>
                     </tr>
                     <tr>
                         <th>11회 소환권(원)</th>
-                        <td><input type="number" id="cfg-ticket-price" value="27500" oninput="calculatePackages()"></td>
+                        <td><input type="number" id="cfg-ticket-price" value="27,500원" readonly style="color: #666;"></td>
                     </tr>
                 </table>
-                <p style="font-size:13px; color:#666; text-align:center;">* 다이아 가치는 1다이아 = 13.75원으로 고정되어 있습니다.</p>
             </div>
         </div>
     </div>
