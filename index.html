@@ -19,41 +19,39 @@
 
         /* ── 명중 계산기 내부 디자인 ── */
         .notice { text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
-        .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; }
-        .input-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .input-table, .boss-table { border-collapse: collapse; margin-bottom: 15px; }
-        .input-table th, .input-table td, .boss-table th, .boss-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
-        .input-table th { width: 120px; background: #fff; }
-        .input-table td { width: 100px; background: #fce4d6; }
-        .input-table input { width: 80%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
+        .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+        .input-section, .boss-section, .package-section, .settings-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
+        .input-table, .boss-table, .pkg-table, .cfg-table { border-collapse: collapse; margin-bottom: 15px; width: 100%; }
+        .input-table th, .input-table td, .boss-table th, .boss-table td, .pkg-table th, .pkg-table td, .cfg-table th, .cfg-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
+        .input-table th, .pkg-table th, .cfg-table th { background: #f8f9fa; }
+        .input-table td, .cfg-table td { background: #fce4d6; }
+        .input-table input, .cfg-table input, .pkg-table input { width: 85%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
         .total-row { background: #fff !important; }
         .total-box { font-size: 18px; color: #000; }
-        .calc-btn { width: 100%; padding: 12px; background: #cc0000; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .calc-btn { width: 100%; padding: 12px; background: #cc0000; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .calc-btn:hover { background: #990000; }
-        .boss-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
         .th-world { background: #ffc000; }
         .th-gehenna2 { background: #92d050; }
         .th-gehenna3 { background: #5b9bd5; color: white; }
         .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
         .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
         
-        /* 공통 안내 박스 스타일 */
-        .dummy-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 18px; color: #666; max-width: 600px; margin: 0 auto; text-align: center; }
+        /* 패키지 전용 스타일 */
+        .efficiency-high { color: #28a745; font-size: 18px; }
+        .efficiency-low { color: #dc3545; font-size: 18px; }
     </style>
 </head>
 <body>
 
     <h2>🧛‍♂️ 뱀피르 효율 분석기</h2>
 
-    <!-- 상단 탭 메뉴 (요청대로 뽑기는 아예 삭제했습니다) -->
     <div class="tab-menu">
         <button id="btn-accuracy" class="tab-btn active" onclick="openTab('accuracy')">🎯 명중 계산</button>
         <button id="btn-weekly" class="tab-btn" onclick="openTab('weekly')">🎁 주간 패키지</button>
         <button id="btn-settings" class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
     </div>
 
-    <!-- ── 각 탭의 콘텐츠들 ── -->
-    
     <!-- [명중 계산 탭] -->
     <div id="accuracy" class="tab-content active">
         <div class="notice">살색 칸에만 입력한 후 하단의 계산 버튼을 눌러주세요.</div>
@@ -137,62 +135,52 @@
 
     <!-- [주간 패키지 탭] -->
     <div id="weekly" class="tab-content">
-        <div class="dummy-box">
-            <h3>🎁 뱀피르 주간 패키지 효율 비교</h3>
-            <p>여기에 나중에 패키지 효율 분석이나 재화 가치 계산 기능을 추가할 예정입니다!</p>
+        <div class="notice">설정 탭에서 지정한 재화 가치를 기준으로 효율을 계산합니다.</div>
+        <div class="container" style="max-width: 1000px;">
+            <div class="package-section" style="width: 100%;">
+                <table class="pkg-table">
+                    <thead>
+                        <tr>
+                            <th>패키지명</th>
+                            <th>가격(원)</th>
+                            <th>포함 다이아</th>
+                            <th>상급 소환권(개)</th>
+                            <th>피의 성수(개)</th>
+                            <th>총 가치(원)</th>
+                            <th>효율(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>스텝업 패키지 1단계</td>
+                            <td><input type="number" id="pkg1-price" value="33000" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg1-dia" value="1200" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg1-ticket" value="10" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg1-potion" value="50" oninput="calculatePackages()"></td>
+                            <td id="pkg1-total-val">0원</td>
+                            <td id="pkg1-eff" class="efficiency-high">0%</td>
+                        </tr>
+                        <tr>
+                            <td>주간 성수 초고속 패키지</td>
+                            <td><input type="number" id="pkg2-price" value="55000" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg2-dia" value="2000" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg2-ticket" value="0" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg2-potion" value="200" oninput="calculatePackages()"></td>
+                            <td id="pkg2-total-val">0원</td>
+                            <td id="pkg2-eff" class="efficiency-high">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="calc-btn" onclick="calculatePackages()">패키지 효율 최신화 🔄</button>
+            </div>
         </div>
     </div>
 
     <!-- [설정 탭] -->
     <div id="settings" class="tab-content">
-        <div class="dummy-box">
-            <h3>⚙ 설정 페이지</h3>
-            <p>여기에 가치 계산용 게임 내 재화 단가 설정이나 데이터 저장 기능을 넣을 수 있습니다.</p>
-        </div>
-    </div>
-
-    <script>
-        // 탭 전환 기능
-        function openTab(tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            for(let i=0; i<contents.length; i++) {
-                contents[i].classList.remove('active');
-            }
-            const buttons = document.querySelectorAll('.tab-btn');
-            for(let i=0; i<buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-            document.getElementById(tabId).classList.add('active');
-            
-            if (tabId === 'accuracy') document.getElementById('btn-accuracy').classList.add('active');
-            if (tabId === 'weekly') document.getElementById('btn-weekly').classList.add('active');
-            if (tabId === 'settings') document.getElementById('btn-settings').classList.add('active');
-        }
-
-        // 명중 합계 계산
-        function calculateTotal() {
-            const s1 = Number(document.getElementById('stat1').value) || 0;
-            const s2 = Number(document.getElementById('stat2').value) || 0;
-            const s3 = Number(document.getElementById('stat3').value) || 0;
-            const s4 = Number(document.getElementById('stat4').value) || 0;
-            const total = s1 + s2 + s3 + s4;
-            document.getElementById('totalBox').innerText = total;
-        }
-
-        // 보스 입장 컷 비교
-        function checkBosses() {
-            const currentTotal = Number(document.getElementById('totalBox').innerText);
-            const bossCells = document.querySelectorAll('.boss-cell');
-            bossCells.forEach(cell => {
-                const bossCut = Number(cell.getAttribute('data-cut'));
-                if (currentTotal >= bossCut) {
-                    cell.classList.add('active');
-                } else {
-                    cell.classList.remove('active');
-                }
-            });
-        }
-    </script>
-
-</body>
-</html>
+        <div class="notice">게임 내 시장 단가를 입력해 두면 패키지 탭에 실시간 적용됩니다.</div>
+        <div class="container" style="max-width: 600px;">
+            <div class="settings-section" style="width: 100%;">
+                <h3>💎 재화 가치 기준 설정 (원/개당)</h3>
+                <table class="cfg-table">
+                    <tr>
