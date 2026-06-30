@@ -36,32 +36,31 @@ function checkBosses() {
     const totalScore = parseInt(document.getElementById('totalBox').innerText) || 0;
     const cells = document.querySelectorAll('.boss-cell');
     
-    cells.forEach(cell => {
-        const cutStr = cell.getAttribute('data-cut');
-        if(cutStr) {
-            const cutValue = parseInt(cutStr);
-            if(totalScore >= cutValue) {
-                cell.classList.add('active');
-            } else {
-                cell.classList.remove('active');
-            }
-        }
-    });
+            cells.forEach(cell => {
+                const cutStr = cell.getAttribute('data-cut');
+                if(cutStr) {
+                    const cutValue = parseInt(cutStr);
+                    if(totalScore >= cutValue) {
+                        cell.classList.add('active');
+                    } else {
+                        cell.classList.remove('active');
+                    }
+                }
+            });
 }
 
 // 3. 패키지 효율 계산 로직
 function calculatePackages() {
-    const unitDiaPrice = (parseFloat(document.getElementById('cfg-dia-price').value) || 0) / 100; 
+    // 1다이아 가치는 13.75원으로 고정 적용
+    const unitDiaPrice = 13.75; 
     const unitTicketPrice = parseFloat(document.getElementById('cfg-ticket-price').value) || 0;
-    const unitPotionPrice = parseFloat(document.getElementById('cfg-potion-price').value) || 0;
 
     // 패키지 1 계산
     const p1Price = parseFloat(document.getElementById('pkg1-price').value) || 1;
     const p1Dia = parseFloat(document.getElementById('pkg1-dia').value) || 0;
     const p1Ticket = parseFloat(document.getElementById('pkg1-ticket').value) || 0;
-    const p1Potion = parseFloat(document.getElementById('pkg1-potion').value) || 0;
 
-    const p1Value = (p1Dia * unitDiaPrice) + (p1Ticket * unitTicketPrice) + (p1Potion * unitPotionPrice);
+    const p1Value = (p1Dia * unitDiaPrice) + (p1Ticket * unitTicketPrice);
     const p1Eff = (p1Value / p1Price) * 100;
 
     document.getElementById('pkg1-total-val').innerText = Math.round(p1Value).toLocaleString() + "원";
@@ -72,9 +71,8 @@ function calculatePackages() {
     const p2Price = parseFloat(document.getElementById('pkg2-price').value) || 1;
     const p2Dia = parseFloat(document.getElementById('pkg2-dia').value) || 0;
     const p2Ticket = parseFloat(document.getElementById('pkg2-ticket').value) || 0;
-    const p2Potion = parseFloat(document.getElementById('pkg2-potion').value) || 0;
 
-    const p2Value = (p2Dia * unitDiaPrice) + (p2Ticket * unitTicketPrice) + (p2Potion * unitPotionPrice);
+    const p2Value = (p2Dia * unitDiaPrice) + (p2Ticket * unitTicketPrice);
     const p2Eff = (p2Value / p2Price) * 100;
 
     document.getElementById('pkg2-total-val').innerText = Math.round(p2Value).toLocaleString() + "원";
