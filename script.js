@@ -36,24 +36,24 @@ function checkBosses() {
     const totalScore = parseInt(document.getElementById('totalBox').innerText) || 0;
     const cells = document.querySelectorAll('.boss-cell');
     
-            cells.forEach(cell => {
-                const cutStr = cell.getAttribute('data-cut');
-                if(cutStr) {
-                    const cutValue = parseInt(cutStr);
-                    if(totalScore >= cutValue) {
-                        cell.classList.add('active');
-                    } else {
-                        cell.classList.remove('active');
-                    }
-                }
-            });
+    cells.forEach(cell => {
+        const cutStr = cell.getAttribute('data-cut');
+        if(cutStr) {
+            const cutValue = parseInt(cutStr);
+            if(totalScore >= cutValue) {
+                cell.classList.add('active');
+            } else {
+                cell.classList.remove('active');
+            }
+        }
+    });
 }
 
 // 3. 패키지 효율 계산 로직
 function calculatePackages() {
-    // 1다이아 가치는 13.75원으로 고정 적용
+    // 1다이아 가치(13.75원) 및 11회 소환권 가치(27500원) 고정 적용
     const unitDiaPrice = 13.75; 
-    const unitTicketPrice = parseFloat(document.getElementById('cfg-ticket-price').value) || 0;
+    const unitTicketPrice = 27500;
 
     // 패키지 1 계산
     const p1Price = parseFloat(document.getElementById('pkg1-price').value) || 1;
