@@ -1,0 +1,37 @@
+body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; margin: 0; }
+h2 { text-align: center; color: #cc0000; margin-top: 20px; }
+
+/* ── 상단 탭 메뉴 스타일 ── */
+.tab-menu { display: flex; justify-content: center; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; }
+.tab-btn { background: none; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
+.tab-btn:hover { color: #cc0000; }
+.tab-btn.active { color: #cc0000; border-bottom: 3px solid #cc0000; }
+
+/* ── 콘텐츠 영역 스타일 ── */
+.tab-content { display: none; max-width: 1200px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* ── 내부 디자인 공통 ── */
+.notice { text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
+.container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+.input-section, .boss-section, .package-section, .settings-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
+.input-table, .boss-table, .pkg-table, .cfg-table { border-collapse: collapse; margin-bottom: 15px; width: 100%; }
+.input-table th, .input-table td, .boss-table th, .boss-table td, .pkg-table th, .pkg-table td, .cfg-table th, .cfg-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
+.input-table th, .pkg-table th, .cfg-table th { background: #f8f9fa; }
+.input-table td, .cfg-table td { background: #fce4d6; }
+.input-table input, .cfg-table input, .pkg-table input { width: 85%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
+.total-row { background: #fff !important; }
+.total-box { font-size: 18px; color: #000; }
+.calc-btn { width: 100%; padding: 12px; background: #cc0000; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.calc-btn:hover { background: #990000; }
+
+/* ── 보스 테이블 커스텀 컬러 ── */
+.th-world { background: #ffc000; }
+.th-gehenna2 { background: #92d050; }
+.th-gehenna3 { background: #5b9bd5; color: white; }
+.boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
+.boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
+
+/* ── 패키지 효율 글자 컬러 ── */
+.efficiency-high { color: #28a745; font-size: 18px; }
+.efficiency-low { color: #dc3545; font-size: 18px; }
