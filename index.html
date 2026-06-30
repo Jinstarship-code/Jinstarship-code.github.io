@@ -82,7 +82,7 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td class="boss-cell" data-cut="1395">오르세카(1395)</td>
+                            <td class="boss-cell" data-cut="1395">오르세ка(1395)</td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -108,8 +108,7 @@
                             <th>패키지명</th>
                             <th>가격(원)</th>
                             <th>포함 다이아</th>
-                            <th>상급 소환권(개)</th>
-                            <th>피의 성수(개)</th>
+                            <th>11회 소환권(개)</th>
                             <th>총 가치(원)</th>
                             <th>효율(%)</th>
                         </tr>
@@ -119,8 +118,7 @@
                             <td>스텝업 패키지 1단계</td>
                             <td><input type="number" id="pkg1-price" value="33000" oninput="calculatePackages()"></td>
                             <td><input type="number" id="pkg1-dia" value="1200" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg1-ticket" value="10" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg1-potion" value="50" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg1-ticket" value="1" oninput="calculatePackages()"></td>
                             <td id="pkg1-total-val">0원</td>
                             <td id="pkg1-eff" class="efficiency-high">0%</td>
                         </tr>
@@ -128,8 +126,7 @@
                             <td>주간 성수 초고속 패키지</td>
                             <td><input type="number" id="pkg2-price" value="55000" oninput="calculatePackages()"></td>
                             <td><input type="number" id="pkg2-dia" value="2000" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg2-ticket" value="0" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg2-potion" value="200" oninput="calculatePackages()"></td>
+                            <td><input type="number" id="pkg2-ticket" value="2" oninput="calculatePackages()"></td>
                             <td id="pkg2-total-val">0원</td>
                             <td id="pkg2-eff" class="efficiency-high">0%</td>
                         </tr>
@@ -148,19 +145,16 @@
                 <h3>💎 재화 가치 기준 설정 (원/개당)</h3>
                 <table class="cfg-table">
                     <tr>
-                        <th>100 다이아 당 가치(원)</th>
-                        <td><input type="number" id="cfg-dia-price" value="2750" oninput="calculatePackages()"></td>
+                        <th>1다이아 당 가치(원)</th>
+                        <!-- 고정값 처리를 위해 readonly 속성 부여 및 스타일 조정 -->
+                        <td><input type="number" id="cfg-dia-price" value="13.75" readonly style="color: #666; cursor: not-allowed;"></td>
                     </tr>
                     <tr>
-                        <th>상급 소환권 1개 가치(원)</th>
-                        <td><input type="number" id="cfg-ticket-price" value="1500" oninput="calculatePackages()"></td>
-                    </tr>
-                    <tr>
-                        <th>피의 성수 1개 가치(원)</th>
-                        <td><input type="number" id="cfg-potion-price" value="200" oninput="calculatePackages()"></td>
+                        <th>11회 소환권(원)</th>
+                        <td><input type="number" id="cfg-ticket-price" value="27500" oninput="calculatePackages()"></td>
                     </tr>
                 </table>
-                <p style="font-size:13px; color:#666; text-align:center;">* 기본값은 일반적인 거래소 및 상점 비율 기준입니다.</p>
+                <p style="font-size:13px; color:#666; text-align:center;">* 다이아 가치는 1다이아 = 13.75원으로 고정되어 있습니다.</p>
             </div>
         </div>
     </div>
