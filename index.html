@@ -18,32 +18,31 @@
 
     <!-- [명중 계산 탭] -->
     <div id="accuracy" class="tab-content active">
-        <div class="notice">숫자를 입력한 후 하단의 버튼을 눌러주세요.</div>
+        <div class="notice">명중을 입력해주세요.</div>
         <div class="container">
             <div class="input-section">
                 <table class="input-table">
                     <tr>
                         <th>명중</th>
-                        <td><input type="number" id="stat1" value="0" oninput="calculateTotal()"></td>
+                        <td><input type="number" id="stat1" value="0" oninput="checkBosses()"></td>
                     </tr>
                     <tr>
                         <th>클래스 명중</th>
-                        <td><input type="number" id="stat2" value="0" oninput="calculateTotal()"></td>
+                        <td><input type="number" id="stat2" value="0" oninput="checkBosses()"></td>
                     </tr>
                     <tr>
                         <th>일명 or 스명</th>
-                        <td><input type="number" id="stat3" value="0" oninput="calculateTotal()"></td>
+                        <td><input type="number" id="stat3" value="0" oninput="checkBosses()"></td>
                     </tr>
                     <tr>
                         <th>보스 명중</th>
-                        <td><input type="number" id="stat4" value="0" oninput="calculateTotal()"></td>
+                        <td><input type="number" id="stat4" value="0" oninput="checkBosses()"></td>
                     </tr>
                     <tr class="total-row">
                         <th>합계</th>
                         <td id="totalBox" class="total-box">0</td>
                     </tr>
                 </table>
-                <button class="calc-btn" onclick="checkBosses()">보스 확인 ⚡</button>
             </div>
             
             <div class="boss-section">
@@ -114,7 +113,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- data-num="1"을 부여하여 몇 번째 패키지인지 스크립트가 인식하도록 합니다 -->
+                        <tr class="package-row" data-num="1">
                             <td>스텝업 패키지 1단계</td>
                             <td><input type="number" id="pkg1-price" value="33000" oninput="calculatePackages()"></td>
                             <td><input type="number" id="pkg1-dia" value="1200" oninput="calculatePackages()"></td>
@@ -122,7 +122,7 @@
                             <td id="pkg1-total-val">0원</td>
                             <td id="pkg1-eff" class="efficiency-high">0%</td>
                         </tr>
-                        <tr>
+                        <tr class="package-row" data-num="2">
                             <td>주간 성수 초고속 패키지</td>
                             <td><input type="number" id="pkg2-price" value="55000" oninput="calculatePackages()"></td>
                             <td><input type="number" id="pkg2-dia" value="2000" oninput="calculatePackages()"></td>
@@ -132,7 +132,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <button class="calc-btn" onclick="calculatePackages()">패키지 효율 최신화 🔄</button>
             </div>
         </div>
     </div>
@@ -145,16 +144,13 @@
                 <h3>💎 재화 가치 기준 설정 (원/개당)</h3>
                 <table class="cfg-table">
                     <tr>
-    <th>1다이아 당 가치</th>
-    <!-- input을 없애고 텍스트로만 깔끔하게 노출 -->
-    <td style="color: #666; font-weight: bold;">13.75원</td>
-</tr>
-<tr>
-    <th>11회 소환권 가치</th>
-    <!-- 원하는 포맷 그대로 깨짐 없이 출력 -->
-    <td style="color: #666; font-weight: bold;">27,500원</td>
-</tr>
-
+                        <th>1다이아 당 가치</th>
+                        <td style="color: #666; font-weight: bold;">13.75원</td>
+                    </tr>
+                    <tr>
+                        <th>11회 소환권 가치</th>
+                        <td style="color: #666; font-weight: bold;">27,500원</td>
+                    </tr>
                 </table>
             </div>
         </div>
