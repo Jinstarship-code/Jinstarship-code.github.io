@@ -20,22 +20,19 @@ function openTab(tabId) {
     }
 }
 
-// 2. 명중 계산기 로직
-function calculateTotal() {
+// 2. 명중 계산기 및 보스 체크 로직 (실시간 통합)
+function checkBosses() {
+    // 2-1. 명중 합계 계산
     const stat1 = parseInt(document.getElementById('stat1').value) || 0;
     const stat2 = parseInt(document.getElementById('stat2').value) || 0;
     const stat3 = parseInt(document.getElementById('stat3').value) || 0;
     const stat4 = parseInt(document.getElementById('stat4').value) || 0;
     
-    const total = stat1 + stat2 + stat3 + stat4;
-    document.getElementById('totalBox').innerText = total;
-}
+    const totalScore = stat1 + stat2 + stat3 + stat4;
+    document.getElementById('totalBox').innerText = totalScore;
 
-function checkBosses() {
-    calculateTotal(); 
-    const totalScore = parseInt(document.getElementById('totalBox').innerText) || 0;
+    // 2-2. 보스 테이블 실시간 불 켜기
     const cells = document.querySelectorAll('.boss-cell');
-    
     cells.forEach(cell => {
         const cutStr = cell.getAttribute('data-cut');
         if(cutStr) {
@@ -49,48 +46,40 @@ function checkBosses() {
     });
 }
 
-// 3. 패키지 효율 계산 로직
+// 3. 패키지 효율 계산 로직 (반복문으로 일괄 최적화)
 function calculatePackages() {
-    // 1다이아 가치(13.75원) 및 11회 소환권 가치(27500원) 고정 적용
     const unitDiaPrice = 13.75; 
     const unitTicketPrice = 27500;
 
-    // 패키지 1 계산
-    const p1Price = parseFloat(document.getElementById('pkg1-price').value) || 1;
-    const p1Dia = parseFloat(document.getElementById('pkg1-dia').value) || 0;
-    const p1Ticket = parseFloat(document.getElementById('pkg1-ticket').value) || 0;
+    // HTML에 있는 모든 패키지 행(.package-row)을 찾아서 자동으로 반복 계산합니다.
+    const rows = document.querySelectorAll('.package-row');
+    
+    rows.forEach(row => {
+        const num = row.getAttribute('data-num'); // 예: "1" 또는 "2"
+        
+        const price = parseFloat(document.getElementById(`pkg${num}-price`).value) || 1;
+        const dia = parseFloat(document.getElementById(`pkg${num}-dia`).value) || 0;
+        const ticket = parseFloat(document.getElementById(`pkg${num}-ticket`).value) || 0;
 
-    const p1Value = (p1Dia * unitDiaPrice) + (p1Ticket * unitTicketPrice);
-    const p1Eff = (p1Value / p1Price) * 100;
+        const totalValue = (dia * unitDiaPrice) + (ticket * unitTicketPrice);
+        const efficiency = (totalValue / price) * 100;
 
-    document.getElementById('pkg1-total-val').innerText = Math.round(p1Value).toLocaleString() + "원";
-    document.getElementById('pkg1-eff').innerText = p1Eff.toFixed(1) + "%";
-    toggleEffClass('pkg1-eff', p1Eff);
-
-    // 패키지 2 계산
-    const p2Price = parseFloat(document.getElementById('pkg2-price').value) || 1;
-    const p2Dia = parseFloat(document.getElementById('pkg2-dia').value) || 0;
-    const p2Ticket = parseFloat(document.getElementById('pkg2-ticket').value) || 0;
-
-    const p2Value = (p2Dia * unitDiaPrice) + (p2Ticket * unitTicketPrice);
-    const p2Eff = (p2Value / p2Price) * 100;
-
-    document.getElementById('pkg2-total-val').innerText = Math.round(p2Value).toLocaleString() + "원";
-    document.getElementById('pkg2-eff').innerText = p2Eff.toFixed(1) + "%";
-    toggleEffClass('pkg2-eff', p2Eff);
-}
-
-function toggleEffClass(elementId, effValue) {
-    const el = document.getElementById(elementId);
-    if(effValue >= 100) {
-        el.className = "efficiency-high";
-    } else {
-        el.className = "efficiency-low";
-    }
+        document.getElementById(`pkg${num}-total-val`).innerText = Math.round(totalValue).toLocaleString() + "원";
+        
+        const effElement = document.getElementById(`pkg${num}-eff`);
+        effElement.innerText = efficiency.toFixed(1) + "%";
+        
+        // 효율 클래스 변경 (100% 기준)
+        if(efficiency >= 100) {
+            effElement.className = "efficiency-high";
+        } else {
+            effElement.className = "efficiency-low";
+        }
+    });
 }
 
 // 초기화 코드 실행
 window.onload = function() {
-    calculateTotal();
+    checkBosses();
     calculatePackages();
 }
