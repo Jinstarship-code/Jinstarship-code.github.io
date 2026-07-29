@@ -16,22 +16,28 @@ h2 { text-align: center; color: #cc0000; margin-top: 20px; }
 .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
 .input-section, .boss-section, .package-section, .settings-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
 .input-table, .boss-table, .pkg-table, .cfg-table { border-collapse: collapse; margin-bottom: 15px; width: 100%; }
-.input-table th, .input-table td, .boss-table th, .boss-table td, .pkg-table th, .pkg-table td, .cfg-table th, .cfg-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
+
+.input-table th, .input-table td, .boss-table th, .boss-table td, .pkg-table th, .pkg-table td, .cfg-table th, .cfg-table td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 15px; font-weight: bold; }
 .input-table th, .pkg-table th, .cfg-table th { background: #f8f9fa; }
-.input-table td, .cfg-table td { background: #fce4d6; }
-.input-table input, .cfg-table input, .pkg-table input { width: 85%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
+.input-table td { background: #fce4d6; }
+.cfg-table td { background: #ffffff; text-align: left; padding-left: 20px; }
+
+/* 인풋창 스타일 공통 보정 */
+.input-table input, .pkg-table input { width: 90%; border: none; background: transparent; text-align: center; font-size: 15px; font-weight: bold; outline: none; }
+.cfg-table input { width: 120px; border: 1px solid #ccc; border-radius: 4px; padding: 4px; text-align: right; margin-right: 5px; font-size: 15px; font-weight: bold; }
+
 .total-row { background: #fff !important; }
 .total-box { font-size: 18px; color: #000; }
-.calc-btn { width: 100%; padding: 12px; background: #cc0000; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-.calc-btn:hover { background: #990000; }
+.total-val-cell { color: #444; font-size: 15px; }
 
 /* ── 보스 테이블 커스텀 컬러 ── */
 .th-world { background: #ffc000; }
 .th-gehenna2 { background: #92d050; }
 .th-gehenna3 { background: #5b9bd5; color: white; }
+.th-components { background: #e2efda; color: #375623; }
 .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
 .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
 
 /* ── 패키지 효율 글자 컬러 ── */
-.efficiency-high { color: #28a745; font-size: 18px; }
-.efficiency-low { color: #dc3545; font-size: 18px; }
+.efficiency-high { color: #28a745; font-size: 16px; }
+.efficiency-low { color: #dc3545; font-size: 16px; }
