@@ -15,7 +15,7 @@ function openTab(tabId) {
     if(tabId === 'weekly') document.getElementById('btn-weekly').classList.add('active');
     if(tabId === 'settings') document.getElementById('btn-settings').classList.add('active');
 
-    if(tabId === 'weekly') {
+    if(tabId === 'weekly' || tabId === 'settings') {
         calculatePackages();
     }
 }
@@ -46,30 +46,38 @@ function checkBosses() {
     });
 }
 
-// 3. 패키지 효율 계산 로직 (반복문으로 일괄 최적화)
+// 3. 패키지 효율 계산 로직 (유저 설정 단가 실시간 반영)
 function calculatePackages() {
-    const unitDiaPrice = 13.75; 
-    const unitTicketPrice = 27500;
+    // 설정 탭에서 유저가 입력한 재화별 단가를 실시간으로 가져옴
+    const unitDiaPrice = parseFloat(document.getElementById('price-dia').value) || 0; 
+    const unitTicketPrice = parseFloat(document.getElementById('price-ticket').value) || 0;
+    const unitHolyPrice = parseFloat(document.getElementById('price-holy').value) || 0;
+    const unitMaterialPrice = parseFloat(document.getElementById('price-material').value) || 0;
 
-    // HTML에 있는 모든 패키지 행(.package-row)을 찾아서 자동으로 반복 계산합니다.
+    // HTML 내의 모든 패키지 행(.package-row)을 자동으로 탐색하여 계산
     const rows = document.querySelectorAll('.package-row');
     
     rows.forEach(row => {
-        const num = row.getAttribute('data-num'); // 예: "1" 또는 "2"
+        const num = row.getAttribute('data-num'); 
         
+        // 패키지별 가격 및 입력한 수량 가져오기
         const price = parseFloat(document.getElementById(`pkg${num}-price`).value) || 1;
         const dia = parseFloat(document.getElementById(`pkg${num}-dia`).value) || 0;
         const ticket = parseFloat(document.getElementById(`pkg${num}-ticket`).value) || 0;
+        const holy = parseFloat(document.getElementById(`pkg${num}-holy`).value) || 0;
+        const material = parseFloat(document.getElementById(`pkg${num}-material`).value) || 0;
 
-        const totalValue = (dia * unitDiaPrice) + (ticket * unitTicketPrice);
+        // 유저 단가 기준 가치 합산 연산
+        const totalValue = (dia * unitDiaPrice) + (ticket * unitTicketPrice) + (holy * unitHolyPrice) + (material * unitMaterialPrice);
         const efficiency = (totalValue / price) * 100;
 
+        // 결과 UI 바인딩
         document.getElementById(`pkg${num}-total-val`).innerText = Math.round(totalValue).toLocaleString() + "원";
         
         const effElement = document.getElementById(`pkg${num}-eff`);
         effElement.innerText = efficiency.toFixed(1) + "%";
         
-        // 효율 클래스 변경 (100% 기준)
+        // 효율 클래스 변경 (가성비 100% 기준 색상 반전)
         if(efficiency >= 100) {
             effElement.className = "efficiency-high";
         } else {
