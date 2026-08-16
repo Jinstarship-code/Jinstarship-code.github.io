@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>뱀피르 효율 계산기</title>
-    <!-- 외부 스타일시트 연결 -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <h2>🧛‍♂️ 뱀피르 효율 분석기</h2>
-
+    
     <div class="tab-menu">
+        <!-- 주간 패키지 탭 버튼 삭제 -->
         <button id="btn-accuracy" class="tab-btn active" onclick="openTab('accuracy')">🎯 명중 계산</button>
-        <button id="btn-weekly" class="tab-btn" onclick="openTab('weekly')">🎁 주간 패키지</button>
         <button id="btn-settings" class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
     </div>
 
     <!-- [명중 계산 탭] -->
     <div id="accuracy" class="tab-content active">
-        <div class="notice">숫자를 입력하면 실시간으로 통과 가능한 보스가 표시됩니다.</div>
+        <div class="notice">숫자를 입력하면 보스 테이블에 즉시 반영됩니다.</div>
         <div class="container">
             <div class="input-section">
                 <table class="input-table">
@@ -44,7 +42,7 @@
                     </tr>
                 </table>
             </div>
-            
+
             <div class="boss-section">
                 <table class="boss-table">
                     <thead>
@@ -96,94 +94,26 @@
         </div>
     </div>
 
-    <!-- [주간 패키지 탭] -->
-    <div id="weekly" class="tab-content">
-        <div class="notice">각 패키지의 구성품 수량을 입력하면 설정 탭의 단가 기준으로 실시간 계산됩니다.</div>
-        <div class="container" style="max-width: 100%;">
-            <div class="package-section" style="width: 100%; overflow-x: auto;">
-                <table class="pkg-table">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">패키지명</th>
-                            <th rowspan="2">가격(원)</th>
-                            <th colspan="4" class="th-components">구성품 수량 입력</th>
-                            <th rowspan="2">총 가치(원)</th>
-                            <th rowspan="2">효율(%)</th>
-                        </tr>
-                        <tr>
-                            <th>다이아</th>
-                            <th>11회소환권</th>
-                            <th>성수</th>
-                            <th>상급재료</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- 패키지 행 추가 시 class="package-row"와 data-num="번호"를 맞춰서 복사하시면 됩니다 -->
-                        <tr class="package-row" data-num="1">
-                            <td style="text-align: left; padding-left: 15px;">스텝업 패키지 1단계</td>
-                            <td><input type="number" id="pkg1-price" value="33000" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg1-dia" value="1200" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg1-ticket" value="1" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg1-holy" value="10" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg1-material" value="0" oninput="calculatePackages()"></td>
-                            <td id="pkg1-total-val" class="total-val-cell">0원</td>
-                            <td id="pkg1-eff" class="efficiency-high">0%</td>
-                        </tr>
-                        <tr class="package-row" data-num="2">
-                            <td style="text-align: left; padding-left: 15px;">주간 성수 초고속 패키지</td>
-                            <td><input type="number" id="pkg2-price" value="55000" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg2-dia" value="2000" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg2-ticket" value="2" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg2-holy" value="50" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg2-material" value="5" oninput="calculatePackages()"></td>
-                            <td id="pkg2-total-val" class="total-val-cell">0원</td>
-                            <td id="pkg2-eff" class="efficiency-high">0%</td>
-                        </tr>
-                        <tr class="package-row" data-num="3">
-                            <td style="text-align: left; padding-left: 15px;">상급 제작 지원 패키지</td>
-                            <td><input type="number" id="pkg3-price" value="11000" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg3-dia" value="400" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg3-ticket" value="0" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg3-holy" value="0" oninput="calculatePackages()"></td>
-                            <td><input type="number" id="pkg3-material" value="20" oninput="calculatePackages()"></td>
-                            <td id="pkg3-total-val" class="total-val-cell">0원</td>
-                            <td id="pkg3-eff" class="efficiency-high">0%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
     <!-- [설정 탭] -->
     <div id="settings" class="tab-content">
-        <div class="notice">여기서 입력한 단가가 패키지 효율 계산에 실시간 반영됩니다.</div>
+        <div class="notice">고정된 재화 단가 리스트입니다.</div>
         <div class="container" style="max-width: 600px;">
             <div class="settings-section" style="width: 100%;">
-                <h3>💎 재화 가치 기준 설정 (원/개당)</h3>
+                <h3>💎 재화 가치 기준 설정</h3>
                 <table class="cfg-table">
                     <tr>
                         <th>1다이아 당 가치</th>
-                        <td><input type="number" id="price-dia" value="13.75" step="0.01" oninput="calculatePackages()">원</td>
+                        <td style="color: #666; font-weight: bold;">13.75원</td>
                     </tr>
                     <tr>
                         <th>11회 소환권 가치</th>
-                        <td><input type="number" id="price-ticket" value="27500" step="100" oninput="calculatePackages()">원</td>
-                    </tr>
-                    <tr>
-                        <th>성수(개당) 가치</th>
-                        <td><input type="number" id="price-holy" value="500" step="10" oninput="calculatePackages()">원</td>
-                    </tr>
-                    <tr>
-                        <th>상급재료(개당) 가치</th>
-                        <td><input type="number" id="price-material" value="1500" step="50" oninput="calculatePackages()">원</td>
+                        <td style="color: #666; font-weight: bold;">27,500원</td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- 외부 스크립트 연결 -->
     <script src="script.js"></script>
 </body>
 </html>
