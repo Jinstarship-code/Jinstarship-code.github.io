@@ -87,8 +87,11 @@
             <div class="gacha-section">
                 <button id="gachaPullBtn" class="gacha-pull-btn">🎰 11연차 뽑기</button>
                 <div class="gacha-dia-row">
-                    누적 사용 다이아: <span id="gachaDiaTotal" class="total-box">0</span>
+                    뽑기 횟수: <span id="gachaPullCount" class="total-box">0</span>
                     <button id="gachaResetBtn" class="gacha-reset-btn">초기화</button>
+                </div>
+                <div class="gacha-dia-row">
+                    누적 사용 다이아: <span id="gachaDiaTotal" class="total-box">0</span>
                 </div>
                 <div id="gachaResults" class="gacha-results"></div>
             </div>
@@ -156,6 +159,7 @@
         ];
         const GACHA_COST_PER_PULL = 2000; // 11연차 1회당 다이아
         let gachaDiaTotal = 0;
+        let gachaPullCount = 0;
 
         // ── 탭 전환 ──
         function openTab(tabId) {
@@ -239,12 +243,16 @@
         function doGachaPull() {
             const results = Array.from({ length: 11 }, pullOneGacha);
             renderGachaResults(results);
+            gachaPullCount += 1;
             gachaDiaTotal += GACHA_COST_PER_PULL;
+            document.getElementById('gachaPullCount').textContent = gachaPullCount.toLocaleString();
             document.getElementById('gachaDiaTotal').textContent = gachaDiaTotal.toLocaleString();
         }
 
         function resetGachaDia() {
+            gachaPullCount = 0;
             gachaDiaTotal = 0;
+            document.getElementById('gachaPullCount').textContent = '0';
             document.getElementById('gachaDiaTotal').textContent = '0';
         }
 
