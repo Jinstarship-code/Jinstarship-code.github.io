@@ -5,51 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>뱀피르</title>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; margin: 0; }
-        h2 { text-align: center; color: #cc0000; margin-top: 20px; }
+        :root {
+            --bg-page: #f4f6f9;
+            --text-main: #333;
+            --surface: #ffffff;
+            --tab-text: #666;
+            --accent: #cc0000;
+            --accent-hover: #a30000;
+            --border-color: #333;
+            --th-bg: #f8f9fa;
+            --input-bg: #fce4d6;
+            --notice-bg: #fff3cd;
+            --notice-text: #856404;
+            --boss-idle-bg: #f2f2f2;
+            --boss-idle-text: #7f7f7f;
+        }
+        [data-theme="dark"] {
+            --bg-page: #16181c;
+            --text-main: #e4e4e4;
+            --surface: #24262b;
+            --tab-text: #aaa;
+            --accent: #ff6b6b;
+            --accent-hover: #ff8787;
+            --border-color: #555;
+            --th-bg: #2c2e33;
+            --input-bg: #3a2f2c;
+            --notice-bg: #4a3f14;
+            --notice-text: #ffe08a;
+            --boss-idle-bg: #2c2e33;
+            --boss-idle-text: #999;
+        }
 
-        .tab-menu { display: flex; justify-content: center; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background: none; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
-        .tab-btn:hover { color: #cc0000; }
-        .tab-btn.active { color: #cc0000; border-bottom: 3px solid #cc0000; }
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: var(--bg-page); color: var(--text-main); margin: 0; transition: background-color 0.2s ease, color 0.2s ease; }
+        .header-row { display: flex; justify-content: center; align-items: center; position: relative; }
+        h2 { text-align: center; color: var(--accent); margin-top: 20px; }
+        .theme-toggle-btn { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: var(--surface); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: 14px; }
+
+        .tab-menu { display: flex; justify-content: center; background-color: var(--surface); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { background: none; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; color: var(--tab-text); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
+        .tab-btn:hover { color: var(--accent); }
+        .tab-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
 
         .tab-content { display: none; max-width: 1200px; margin: 0 auto; }
         .tab-content.active { display: block; }
 
-        .notice { text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
+        .notice { text-align: center; background: var(--notice-bg); color: var(--notice-text); padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
         .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
-        .input-section, .boss-section, .settings-section, .gacha-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
+        .input-section, .boss-section, .settings-section, .gacha-section { background: var(--surface); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
 
         table { border-collapse: collapse; margin-bottom: 15px; width: 100%; }
-        th, td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
+        th, td { border: 2px solid var(--border-color); padding: 10px; text-align: center; font-size: 16px; font-weight: bold; color: var(--text-main); }
 
-        .input-table th, .cfg-table th { background: #f8f9fa; }
-        .input-table td, .cfg-table td { background: #fce4d6; }
-        .input-table input { width: 85%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; }
+        .input-table th, .cfg-table th { background: var(--th-bg); }
+        .input-table td, .cfg-table td { background: var(--input-bg); }
+        .input-table input { width: 85%; border: none; background: transparent; text-align: center; font-size: 16px; font-weight: bold; outline: none; color: var(--text-main); }
 
-        .total-box { font-size: 18px; color: #cc0000; }
+        .total-box { font-size: 18px; color: var(--accent); }
 
         .th-world { background: #ffc000; }
         .th-gehenna2 { background: #92d050; }
         .th-gehenna3 { background: #5b9bd5; color: white; }
-        .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
+        .boss-cell { background: var(--boss-idle-bg); color: var(--boss-idle-text); transition: all 0.3s ease; }
         .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
         .boss-cell.empty { background: transparent; border: none; }
 
         /* 가챠 시뮬레이션 */
         .gacha-section { text-align: center; width: 100%; max-width: 600px; }
-        .gacha-pull-btn { padding: 14px 32px; font-size: 16px; font-weight: bold; background: #cc0000; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-        .gacha-pull-btn:hover { background: #a30000; }
+        .gacha-pull-btn { padding: 14px 32px; font-size: 16px; font-weight: bold; background: var(--accent); color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .gacha-pull-btn:hover { background: var(--accent-hover); }
         .gacha-dia-row { margin-top: 18px; font-size: 16px; }
-        .gacha-reset-btn { margin-left: 12px; padding: 6px 14px; font-size: 14px; border: 1px solid #999; background: #fff; border-radius: 4px; cursor: pointer; }
-        .gacha-reset-btn:hover { background: #f2f2f2; }
+        .gacha-reset-btn { margin-left: 12px; padding: 6px 14px; font-size: 14px; border: 1px solid #999; background: var(--surface); color: var(--text-main); border-radius: 4px; cursor: pointer; }
+        .gacha-reset-btn:hover { background: var(--th-bg); }
         .gacha-results { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 25px; }
         .gacha-card { width: 70px; height: 70px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
 
-    <h2>🧛‍♂️ 뱀피르</h2>
+    <div class="header-row">
+        <h2>🧛‍♂️ 뱀피르</h2>
+        <button id="themeToggleBtn" class="theme-toggle-btn">🌙 다크모드</button>
+    </div>
 
     <div class="tab-menu">
         <button id="btn-accuracy" class="tab-btn active" data-tab="accuracy">🎯 명중 계산</button>
@@ -67,7 +103,7 @@
                     <tr><th>클래스 명중</th><td><input type="number" id="stat2" value="0"></td></tr>
                     <tr><th>일명/스명</th><td><input type="number" id="stat3" value="0"></td></tr>
                     <tr><th>보스 명중</th><td><input type="number" id="stat4" value="0"></td></tr>
-                    <tr style="background:#fff;"><th>합계</th><td id="totalBox" class="total-box">0</td></tr>
+                    <tr style="background:var(--surface);"><th>합계</th><td id="totalBox" class="total-box">0</td></tr>
                 </table>
             </div>
 
@@ -160,6 +196,30 @@
         const GACHA_COST_PER_PULL = 2000; // 11연차 1회당 다이아
         let gachaDiaTotal = 0;
         let gachaPullCount = 0;
+
+        // ── 다크모드 ──
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeToggleBtn').textContent = theme === 'dark' ? '☀ 라이트모드' : '🌙 다크모드';
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            try {
+                localStorage.setItem('vampir-theme', next);
+            } catch (e) {}
+            applyTheme(next);
+        }
+
+        function initTheme() {
+            let saved = 'light';
+            try {
+                saved = localStorage.getItem('vampir-theme') || 'light';
+            } catch (e) {}
+            applyTheme(saved);
+            document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+        }
 
         // ── 탭 전환 ──
         function openTab(tabId) {
@@ -258,6 +318,7 @@
 
         // ── 이벤트 연결 (인라인 onclick/oninput 대신 한 곳에서 관리) ──
         function init() {
+            initTheme();
             buildBossTable();
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
