@@ -8,7 +8,7 @@
         body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; margin: 0; }
         h2 { text-align: center; color: #cc0000; margin-top: 20px; }
 
-        .tab-menu { display: flex; justify-content: center; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; }
+        .tab-menu { display: flex; justify-content: center; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 10px 0; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn { background: none; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
         .tab-btn:hover { color: #cc0000; }
         .tab-btn.active { color: #cc0000; border-bottom: 3px solid #cc0000; }
@@ -18,7 +18,7 @@
 
         .notice { text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
         .container { display: flex; gap: 40px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
-        .input-section, .boss-section, .settings-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
+        .input-section, .boss-section, .settings-section, .gacha-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 300px; }
 
         table { border-collapse: collapse; margin-bottom: 15px; width: 100%; }
         th, td { border: 2px solid #333; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; }
@@ -35,6 +35,16 @@
         .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
         .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
         .boss-cell.empty { background: transparent; border: none; }
+
+        /* 가챠 시뮬레이션 */
+        .gacha-section { text-align: center; width: 100%; max-width: 600px; }
+        .gacha-pull-btn { padding: 14px 32px; font-size: 16px; font-weight: bold; background: #cc0000; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .gacha-pull-btn:hover { background: #a30000; }
+        .gacha-dia-row { margin-top: 18px; font-size: 16px; }
+        .gacha-reset-btn { margin-left: 12px; padding: 6px 14px; font-size: 14px; border: 1px solid #999; background: #fff; border-radius: 4px; cursor: pointer; }
+        .gacha-reset-btn:hover { background: #f2f2f2; }
+        .gacha-results { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 25px; }
+        .gacha-card { width: 70px; height: 70px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
@@ -43,6 +53,7 @@
 
     <div class="tab-menu">
         <button id="btn-accuracy" class="tab-btn active" data-tab="accuracy">🎯 명중 계산</button>
+        <button id="btn-gacha" class="tab-btn" data-tab="gacha">🎰 가챠 시뮬레이션</button>
         <button id="btn-settings" class="tab-btn" data-tab="settings">⚙ 설정</button>
     </div>
 
@@ -65,6 +76,21 @@
                     <thead id="bossTableHead"></thead>
                     <tbody id="bossTableBody"></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 가챠 시뮬레이션 탭 -->
+    <div id="gacha" class="tab-content">
+        <div class="notice">테스트용 시뮬레이션이며 등급 색상만 표시됩니다. (11연차 1회 = 2,000 다이아)</div>
+        <div class="container">
+            <div class="gacha-section">
+                <button id="gachaPullBtn" class="gacha-pull-btn">🎰 11연차 뽑기</button>
+                <div class="gacha-dia-row">
+                    누적 사용 다이아: <span id="gachaDiaTotal" class="total-box">0</span>
+                    <button id="gachaResetBtn" class="gacha-reset-btn">초기화</button>
+                </div>
+                <div id="gachaResults" class="gacha-results"></div>
             </div>
         </div>
     </div>
@@ -119,6 +145,17 @@
         ];
 
         const STAT_INPUT_IDS = ['stat1', 'stat2', 'stat3', 'stat4'];
+
+        // ── 가챠 데이터: 확률(%)과 등급 색상 ──
+        const GACHA_GRADES = [
+            { name: '전설', rate: 0.015, bg: '#f5c518', text: '#5a4400' },   // 황금색
+            { name: '영웅', rate: 0.2,   bg: '#9b59b6', text: '#ffffff' },   // 보라색
+            { name: '희귀', rate: 2.1,   bg: '#5dade2', text: '#ffffff' },   // 하늘색
+            { name: '고급', rate: 23,    bg: '#a9dc76', text: '#2d4a12' },   // 연두색
+            { name: '일반', rate: 100 - (0.015 + 0.2 + 2.1 + 23), bg: '#d9d9d9', text: '#555555' }, // 연회색 (나머지)
+        ];
+        const GACHA_COST_PER_PULL = 2000; // 11연차 1회당 다이아
+        let gachaDiaTotal = 0;
 
         // ── 탭 전환 ──
         function openTab(tabId) {
@@ -175,6 +212,42 @@
             });
         }
 
+        // ── 가챠 1회 뽑기: 확률 누적 방식으로 등급 결정 ──
+        function pullOneGacha() {
+            const roll = Math.random() * 100;
+            let cumulative = 0;
+            for (const grade of GACHA_GRADES) {
+                cumulative += grade.rate;
+                if (roll < cumulative) return grade;
+            }
+            return GACHA_GRADES[GACHA_GRADES.length - 1];
+        }
+
+        function renderGachaResults(results) {
+            const container = document.getElementById('gachaResults');
+            container.innerHTML = '';
+            results.forEach(grade => {
+                const card = document.createElement('div');
+                card.className = 'gacha-card';
+                card.style.background = grade.bg;
+                card.style.color = grade.text;
+                card.textContent = grade.name;
+                container.appendChild(card);
+            });
+        }
+
+        function doGachaPull() {
+            const results = Array.from({ length: 11 }, pullOneGacha);
+            renderGachaResults(results);
+            gachaDiaTotal += GACHA_COST_PER_PULL;
+            document.getElementById('gachaDiaTotal').textContent = gachaDiaTotal.toLocaleString();
+        }
+
+        function resetGachaDia() {
+            gachaDiaTotal = 0;
+            document.getElementById('gachaDiaTotal').textContent = '0';
+        }
+
         // ── 이벤트 연결 (인라인 onclick/oninput 대신 한 곳에서 관리) ──
         function init() {
             buildBossTable();
@@ -186,6 +259,9 @@
             STAT_INPUT_IDS.forEach(id => {
                 document.getElementById(id).addEventListener('input', checkBosses);
             });
+
+            document.getElementById('gachaPullBtn').addEventListener('click', doGachaPull);
+            document.getElementById('gachaResetBtn').addEventListener('click', resetGachaDia);
 
             checkBosses();
         }
