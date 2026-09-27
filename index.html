@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>뱀피르</title>
     <style>
-        /* CSS 영역 */
         body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f4f6f9; color: #333; margin: 0; }
         h2 { text-align: center; color: #cc0000; margin-top: 20px; }
 
@@ -35,15 +34,16 @@
         .th-gehenna3 { background: #5b9bd5; color: white; }
         .boss-cell { background: #f2f2f2; color: #7f7f7f; transition: all 0.3s ease; }
         .boss-cell.active { background: #d4edda !important; color: #155724 !important; border: 2px solid #28a745 !important; }
+        .boss-cell.empty { background: transparent; border: none; }
     </style>
 </head>
 <body>
 
     <h2>🧛‍♂️ 뱀피르</h2>
-    
+
     <div class="tab-menu">
-        <button id="btn-accuracy" class="tab-btn active" onclick="openTab('accuracy')">🎯 명중 계산</button>
-        <button id="btn-settings" class="tab-btn" onclick="openTab('settings')">⚙ 설정</button>
+        <button id="btn-accuracy" class="tab-btn active" data-tab="accuracy">🎯 명중 계산</button>
+        <button id="btn-settings" class="tab-btn" data-tab="settings">⚙ 설정</button>
     </div>
 
     <!-- 명중 계산 탭 -->
@@ -52,32 +52,18 @@
         <div class="container">
             <div class="input-section">
                 <table class="input-table">
-                    <tr><th>명중</th><td><input type="number" id="stat1" value="0" oninput="checkBosses()"></td></tr>
-                    <tr><th>클래스 명중</th><td><input type="number" id="stat2" value="0" oninput="checkBosses()"></td></tr>
-                    <tr><th>일명/스명</th><td><input type="number" id="stat3" value="0" oninput="checkBosses()"></td></tr>
-                    <tr><th>보스 명중</th><td><input type="number" id="stat4" value="0" oninput="checkBosses()"></td></tr>
+                    <tr><th>명중</th><td><input type="number" id="stat1" value="0"></td></tr>
+                    <tr><th>클래스 명중</th><td><input type="number" id="stat2" value="0"></td></tr>
+                    <tr><th>일명/스명</th><td><input type="number" id="stat3" value="0"></td></tr>
+                    <tr><th>보스 명중</th><td><input type="number" id="stat4" value="0"></td></tr>
                     <tr style="background:#fff;"><th>합계</th><td id="totalBox" class="total-box">0</td></tr>
                 </table>
             </div>
 
             <div class="boss-section">
                 <table class="boss-table">
-                    <thead>
-                        <tr>
-                            <th class="th-world">월드 보스</th>
-                            <th class="th-gehenna2">게헨나 2구역</th>
-                            <th class="th-gehenna3">게헨나 3구역</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="boss-cell" data-cut="480">브라키움(480)</td><td class="boss-cell" data-cut="600">카심(600)</td><td class="boss-cell" data-cut="1350">바르젤린(1350)</td></tr>
-                        <tr><td class="boss-cell" data-cut="550">클레마무스(550)</td><td class="boss-cell" data-cut="830">레물루스(830)</td><td class="boss-cell" data-cut="1650">라파(1650)</td></tr>
-                        <tr><td class="boss-cell" data-cut="800">데세르티(800)</td><td class="boss-cell" data-cut="1027">겔텐(1027)</td><td class="boss-cell" data-cut="2030">팔리츠(2030)</td></tr>
-                        <tr><td class="boss-cell" data-cut="1000">엑세사(1000)</td><td class="boss-cell" data-cut="1100">에노크(1100)</td><td class="boss-cell" data-cut="2250">마슈미드(2250)</td></tr>
-                        <tr><td class="boss-cell" data-cut="1220">유서파트르(1220)</td><td></td><td></td></tr>
-                        <tr><td class="boss-cell" data-cut="1395">오르세카(1395)</td><td></td><td></td></tr>
-                        <tr><td class="boss-cell" data-cut="2050">인페르누스(2050)</td><td></td><td></td></tr>
-                    </tbody>
+                    <thead id="bossTableHead"></thead>
+                    <tbody id="bossTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -98,7 +84,43 @@
     </div>
 
     <script>
-        // 자바스크립트 영역
+        // ── 데이터 영역: 보스를 추가/수정할 땐 여기만 건드리면 됩니다 ──
+        const BOSS_REGIONS = [
+            {
+                label: '월드 보스', className: 'th-world',
+                bosses: [
+                    { name: '브라키움', cut: 480 },
+                    { name: '클레마무스', cut: 550 },
+                    { name: '데세르티', cut: 800 },
+                    { name: '엑세사', cut: 1000 },
+                    { name: '유서파트르', cut: 1220 },
+                    { name: '오르세카', cut: 1395 },
+                    { name: '인페르누스', cut: 2050 },
+                ]
+            },
+            {
+                label: '게헨나 2구역', className: 'th-gehenna2',
+                bosses: [
+                    { name: '카심', cut: 600 },
+                    { name: '레물루스', cut: 830 },
+                    { name: '겔텐', cut: 1027 },
+                    { name: '에노크', cut: 1100 },
+                ]
+            },
+            {
+                label: '게헨나 3구역', className: 'th-gehenna3',
+                bosses: [
+                    { name: '바르젤린', cut: 1350 },
+                    { name: '라파', cut: 1650 },
+                    { name: '팔리츠', cut: 2030 },
+                    { name: '마슈미드', cut: 2250 },
+                ]
+            },
+        ];
+
+        const STAT_INPUT_IDS = ['stat1', 'stat2', 'stat3', 'stat4'];
+
+        // ── 탭 전환 ──
         function openTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -106,21 +128,69 @@
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
-        function checkBosses() {
-            const s1 = parseInt(document.getElementById('stat1').value) || 0;
-            const s2 = parseInt(document.getElementById('stat2').value) || 0;
-            const s3 = parseInt(document.getElementById('stat3').value) || 0;
-            const s4 = parseInt(document.getElementById('stat4').value) || 0;
-            const total = s1 + s2 + s3 + s4;
-            document.getElementById('totalBox').innerText = total.toLocaleString();
+        // ── 보스 테이블을 데이터로부터 자동 생성 (행 개수가 달라도 안전) ──
+        function buildBossTable() {
+            const thead = document.getElementById('bossTableHead');
+            const tbody = document.getElementById('bossTableBody');
 
-            document.querySelectorAll('.boss-cell').forEach(cell => {
-                const cut = parseInt(cell.getAttribute('data-cut'));
-                if (cut && total >= cut) cell.classList.add('active');
-                else cell.classList.remove('active');
+            const headerRow = document.createElement('tr');
+            BOSS_REGIONS.forEach(region => {
+                const th = document.createElement('th');
+                th.className = region.className;
+                th.textContent = region.label;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            const maxRows = Math.max(...BOSS_REGIONS.map(r => r.bosses.length));
+            for (let i = 0; i < maxRows; i++) {
+                const row = document.createElement('tr');
+                BOSS_REGIONS.forEach(region => {
+                    const boss = region.bosses[i];
+                    const td = document.createElement('td');
+                    if (boss) {
+                        td.className = 'boss-cell';
+                        td.dataset.cut = boss.cut;
+                        td.textContent = `${boss.name}(${boss.cut})`;
+                    } else {
+                        td.className = 'boss-cell empty';
+                    }
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            }
+        }
+
+        // ── 합계 계산 및 보스 하이라이트 ──
+        function checkBosses() {
+            const total = STAT_INPUT_IDS.reduce((sum, id) => {
+                return sum + (parseInt(document.getElementById(id).value, 10) || 0);
+            }, 0);
+
+            document.getElementById('totalBox').textContent = total.toLocaleString();
+
+            document.querySelectorAll('.boss-cell[data-cut]').forEach(cell => {
+                const cut = parseInt(cell.dataset.cut, 10);
+                cell.classList.toggle('active', total >= cut);
             });
         }
-        window.onload = checkBosses;
+
+        // ── 이벤트 연결 (인라인 onclick/oninput 대신 한 곳에서 관리) ──
+        function init() {
+            buildBossTable();
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => openTab(btn.dataset.tab));
+            });
+
+            STAT_INPUT_IDS.forEach(id => {
+                document.getElementById(id).addEventListener('input', checkBosses);
+            });
+
+            checkBosses();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
