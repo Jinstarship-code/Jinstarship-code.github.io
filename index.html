@@ -78,6 +78,23 @@
         .gacha-reset-btn:hover { background: var(--th-bg); }
         .gacha-results { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 25px; }
         .gacha-card { width: 70px; height: 70px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+
+        /* 정보 탭 */
+        .info-layout { display: flex; gap: 20px; align-items: flex-start; max-width: 1200px; margin: 0 auto; }
+        .info-menu { width: 170px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; background: var(--surface); border-radius: 8px; padding: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .info-menu-item { text-align: left; background: none; border: none; border-radius: 6px; padding: 12px 14px; font-size: 15px; font-weight: bold; color: var(--text-main); cursor: pointer; }
+        .info-menu-item:hover { background: var(--th-bg); }
+        .info-menu-item.active { background: var(--input-bg); color: var(--accent); }
+        .info-panel-wrap { flex: 1; background: var(--surface); border-radius: 8px; padding: 25px 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 0; }
+        .info-content { display: none; font-size: 15px; line-height: 1.8; text-align: left; font-weight: normal; }
+        .info-content.active { display: block; }
+        .info-content h4 { font-size: 17px; margin: 0 0 10px; }
+        .info-content h5 { font-size: 15px; margin: 18px 0 8px; }
+        .info-content .info-ex { background: var(--th-bg); border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 14px; }
+        .info-content table { margin-top: 10px; font-size: 14px; }
+        .info-content th { background: var(--accent); color: #fff; }
+        .info-content td { background: var(--surface); font-weight: normal; }
+        .info-content .info-foot { font-size: 13px; color: var(--tab-text); margin-top: 14px; }
     </style>
 </head>
 <body>
@@ -90,6 +107,7 @@
     <div class="tab-menu">
         <button id="btn-accuracy" class="tab-btn active" data-tab="accuracy">🎯 명중 계산</button>
         <button id="btn-gacha" class="tab-btn" data-tab="gacha">🎰 가챠 시뮬레이션</button>
+        <button id="btn-info" class="tab-btn" data-tab="info">📖 정보</button>
         <button id="btn-settings" class="tab-btn" data-tab="settings">⚙ 설정</button>
     </div>
 
@@ -130,6 +148,71 @@
                     누적 사용 다이아: <span id="gachaDiaTotal" class="total-box">0</span>
                 </div>
                 <div id="gachaResults" class="gacha-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 정보 탭 -->
+    <div id="info" class="tab-content">
+        <div class="info-layout">
+            <div class="info-menu">
+                <button class="info-menu-item active" data-info="prize">쟁탈전 상금</button>
+            </div>
+
+            <div class="info-panel-wrap">
+                <!-- 쟁탈전 상금 -->
+                <div id="info-prize" class="info-content active">
+                    <h4>● 상금 및 기여도 보상</h4>
+
+                    <h5>1. 상금 산정</h5>
+                    <p>- 전초전 참가 클랜 선발 완료 시, 거래소에 누적된 각 세금 중 50%가 쟁탈전 상금으로 확정됩니다.</p>
+                    <p>* 전초전 상금 : 서버 누적 세금의 50%<br>* 결승전 상금 : 서버 그룹 누적 세금의 50%</p>
+
+                    <div class="info-ex">
+                        (ex. '서버 누적 세금'이 2,000,000다이아, '서버 그룹 누적 세금'이 10,000,000 다이아일 경우<br>
+                        정규시즌 쟁탈전 상금은 아래와 같습니다.<br>
+                        &nbsp;&nbsp;- 전초전 : 2,000,000 X 50% = 1,000,000 다이아<br>
+                        &nbsp;&nbsp;- 결승전 : 10,000,000 X 50% = 5,000,000 다이아 )
+                    </div>
+
+                    <p>- 상금 확정 이후 발생하는 거래소 세금은 다음 시즌 상금으로 누적됩니다.<br>
+                    - 서버에 누적된 세금은 [거래소 → 세율 정보]에서 확인할 수 있습니다.</p>
+
+                    <h5>2. 쟁탈전 상금 및 기여도 보상</h5>
+                    <table>
+                        <tr>
+                            <th>라운드</th>
+                            <th>순위</th>
+                            <th>상금 및 기여도 보상</th>
+                        </tr>
+                        <tr>
+                            <td>전초전</td>
+                            <td>1위 클랜</td>
+                            <td>우승 상금: 전초전 상금</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3">결승전</td>
+                            <td>1위 클랜</td>
+                            <td>우승 상금: 결승전 상금의 60%</td>
+                        </tr>
+                        <tr>
+                            <td>1위 클랜</td>
+                            <td>기여도 보상: 결승전 상금의 40% 중 점수 획득량에 따라 분배</td>
+                        </tr>
+                        <tr>
+                            <td>2위 클랜</td>
+                            <td>기여도 보상: 결승전상금의 40% 중 점수 획득량에 따라 분배</td>
+                        </tr>
+                    </table>
+
+                    <div class="info-foot">
+                        * 상금 다이아는 클랜 금고로 지급되며, 상금 지급 시 클랜원 전체에게 알림 우편이 발송됩니다.<br>
+                        * 기여도 보상은 총 상금(산정완료된 다이아)의 40%를 클랜 별 결승전 점수 획득량에 비례하여 지급합니다.<br>
+                        &nbsp;&nbsp;(ex. 결승전의 우승 상금이 5,000,000 다이아이고, 1위 클랜이 10,000점, 2위 클랜이 2,500점 획득했을 경우,<br>
+                        &nbsp;&nbsp;2위 클랜의 기여도 보상은 5,000,000 x 40% x {2,500/(10,000+2,500)} = 400,000 다이아 입니다.)<br>
+                        * 상금은 승리 및 기여도 보상이 합산되어 클랜 금고로 지급됩니다.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -219,6 +302,14 @@
             } catch (e) {}
             applyTheme(saved);
             document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+        }
+
+        // ── 정보 탭 왼쪽 메뉴 전환 ──
+        function openInfo(key) {
+            document.querySelectorAll('.info-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.info-menu-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('info-' + key).classList.add('active');
+            document.querySelector('.info-menu-item[data-info="' + key + '"]').classList.add('active');
         }
 
         // ── 탭 전환 ──
@@ -323,6 +414,10 @@
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => openTab(btn.dataset.tab));
+            });
+
+            document.querySelectorAll('.info-menu-item').forEach(btn => {
+                btn.addEventListener('click', () => openInfo(btn.dataset.info));
             });
 
             STAT_INPUT_IDS.forEach(id => {
