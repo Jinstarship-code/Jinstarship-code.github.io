@@ -145,6 +145,21 @@
         [data-theme="dark"] .grade-silver { background: #3a3d44; color: #cbd5e1; }
         [data-theme="dark"] .grade-bronze { background: #5a2d12; color: #fed7aa; }
 
+        /* 로비 탭 (공식 홈페이지 글 바로가기) */
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .news-card { position: relative; background: var(--surface); border-radius: 14px; padding: 22px 20px 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        .news-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--news-color, var(--accent)); }
+        .news-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .news-head h3 { margin: 0; font-size: 18px; }
+        .news-more { font-size: 13px; color: var(--tab-text); text-decoration: none; }
+        .news-more[href]:hover { color: var(--news-color, var(--accent)); }
+        .news-list { list-style: none; margin: 0; padding: 0; }
+        .news-item a { display: flex; justify-content: space-between; gap: 12px; padding: 10px 10px; border-radius: 8px; text-decoration: none; color: var(--text-main); font-size: 14px; }
+        .news-item a[href] { cursor: pointer; }
+        .news-item a[href]:hover { background: var(--th-bg); }
+        .news-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .news-date { color: var(--tab-text); font-size: 12px; flex-shrink: 0; align-self: center; }
+
         @media (max-width: 700px) {
             .info-layout { flex-direction: column; }
             .info-menu { width: 100%; }
@@ -159,7 +174,8 @@
     </div>
 
     <div class="tab-menu">
-        <button id="btn-info" class="tab-btn active" data-tab="info">📖 정보</button>
+        <button id="btn-lobby" class="tab-btn active" data-tab="lobby">🏠 로비</button>
+        <button id="btn-info" class="tab-btn" data-tab="info">📖 정보</button>
         <button id="btn-accuracy" class="tab-btn" data-tab="accuracy">🎯 명중 계산</button>
         <button id="btn-gacha" class="tab-btn" data-tab="gacha">🎰 가챠 시뮬레이션</button>
         <button id="btn-settings" class="tab-btn" data-tab="settings">⚙ 설정</button>
@@ -206,24 +222,31 @@
         </div>
     </div>
 
+    <!-- 로비 탭 -->
+    <div id="lobby" class="tab-content active">
+        <div class="lobby-title">
+            <h3>🧛‍♂️ 뱀피르 소식</h3>
+            <p>공식 홈페이지의 글을 클릭하면 해당 글로 이동합니다</p>
+        </div>
+        <p id="newsDummyNote" class="info-empty" style="display:none; padding:0 0 15px;">※ 예시 글입니다. 스크립트의 LOBBY_NEWS에 실제 글 주소를 넣어주세요</p>
+        <div id="newsGrid" class="news-grid"></div>
+    </div>
+
     <!-- 정보 탭 (길드 활동 정리) -->
-    <div id="info" class="tab-content active">
+    <div id="info" class="tab-content">
         <div class="info-layout">
             <div id="infoMenu" class="info-menu"></div>
 
             <div id="infoPanelWrap" class="info-panel-wrap">
                 <!-- 로비 -->
-                <div id="info-lobby" class="info-content active">
-                    <div class="info-card">
-                        <h3>공지</h3>
-                        <p class="info-empty">공지사항이 없습니다.</p>
-                    </div>
+                <div id="info-weekly" class="info-content active">
 
                     <div class="lobby-title">
                         <h3 id="sheetTitle">길드원 주간 활동 트래커</h3>
                         <p id="sheetSubtitle"></p>
                     </div>
 
+                    <p id="dummyNote" class="info-empty" style="display:none; padding:0 0 15px;">※ 미리보기용 더미 데이터입니다</p>
                     <p id="sheetStatus" class="info-empty">데이터를 불러오는 중...</p>
                     <div id="sheetStats" class="stat-grid"></div>
 
@@ -329,9 +352,88 @@
             document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
         }
 
+        // ── 로비 탭: 공식 홈페이지 글 바로가기 (여기만 고치면 됩니다) ──
+        // boardUrl = '더보기' 눌렀을 때 가는 게시판 주소, posts = 보여줄 글 목록 (url에 실제 글 주소)
+        const LOBBY_NEWS = [
+            {
+                title: '공지', icon: '📢', color: '#cc0000', boardUrl: '#',
+                posts: [
+                    { title: '예시 공지 제목 1', date: '11.14', url: '#' },
+                    { title: '예시 공지 제목 2', date: '11.12', url: '#' },
+                    { title: '예시 공지 제목 3', date: '11.10', url: '#' },
+                ]
+            },
+            {
+                title: '업데이트 안내', icon: '🛠', color: '#3b82c4', boardUrl: '#',
+                posts: [
+                    { title: '예시 업데이트 안내 1', date: '11.13', url: '#' },
+                    { title: '예시 업데이트 안내 2', date: '11.06', url: '#' },
+                    { title: '예시 업데이트 안내 3', date: '10.30', url: '#' },
+                ]
+            },
+            {
+                title: '개발자 노트', icon: '📝', color: '#8b5cf6', boardUrl: '#',
+                posts: [
+                    { title: '예시 개발자 노트 1', date: '11.11', url: '#' },
+                    { title: '예시 개발자 노트 2', date: '11.04', url: '#' },
+                    { title: '예시 개발자 노트 3', date: '10.28', url: '#' },
+                ]
+            },
+        ];
+
+        // http(s) 주소만 링크로 허용 (그 외는 링크 없이 글자만 표시)
+        function isSafeUrl(u) { return /^https?:\/\//i.test(u || ''); }
+
+        function makeLink(text, url, className) {
+            const a = document.createElement('a');
+            a.className = className || '';
+            if (isSafeUrl(url)) {
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+            }
+            if (text !== undefined) a.textContent = text;
+            return a;
+        }
+
+        function renderLobbyNews() {
+            const grid = document.getElementById('newsGrid');
+            let hasPlaceholder = false;
+            grid.innerHTML = '';
+
+            LOBBY_NEWS.forEach(section => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.style.setProperty('--news-color', section.color);
+
+                const head = document.createElement('div');
+                head.className = 'news-head';
+                head.appendChild(makeCell('h3', section.icon + ' ' + section.title));
+                head.appendChild(makeLink('더보기 →', section.boardUrl, 'news-more'));
+                card.appendChild(head);
+
+                const ul = document.createElement('ul');
+                ul.className = 'news-list';
+                section.posts.forEach(post => {
+                    if (!isSafeUrl(post.url)) hasPlaceholder = true;
+                    const li = document.createElement('li');
+                    li.className = 'news-item';
+                    const a = makeLink(undefined, post.url);
+                    a.appendChild(makeCell('span', post.title, 'news-title'));
+                    a.appendChild(makeCell('span', post.date, 'news-date'));
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                card.appendChild(ul);
+                grid.appendChild(card);
+            });
+
+            document.getElementById('newsDummyNote').style.display = hasPlaceholder ? 'block' : 'none';
+        }
+
         // ── 정보 탭: 왼쪽 메뉴 목록 (항목 추가/수정은 여기만) ──
         const INFO_MENUS = [
-            { key: 'lobby', label: '로비' },
+            { key: 'weekly', label: '주간 활동' },
         ];
 
         function openInfo(key) {
@@ -376,6 +478,63 @@
 
         // ── 구글 시트(웹에 게시한 CSV) 연결 ──
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=0&single=true&output=csv';
+
+        // true: 미리보기용 더미 데이터 / false: 위 구글 시트에서 실제 데이터 불러오기
+        // (실제 사이트에 올릴 때는 false로 바꿔주세요)
+        const USE_DUMMY_DATA = true;
+
+        // 더미 CSV: 실제 시트와 같은 구조로 만들어서 같은 코드로 화면을 그림
+        function buildDummyCSV() {
+            const weeks = 5;
+            const members = [
+                ['길드원01', '길드장', 104, [3, 2, 4, 3, 2]],
+                ['길드원02', '부길드장', 105, [2, 3, 2, 3, 1]],
+                ['길드원03', '부길드장', 101, [1, 2, 3, 1, 2]],
+                ['길드원04', '정예길드원', 96, [2, 2, 1, 2, 2]],
+                ['길드원05', '정예길드원', 99, [1, 1, 2, 1, 0]],
+                ['길드원06', '정예길드원', 95, [1, 0, 1, 1, 1]],
+                ['길드원07', '일반길드원', 98, [0, 1, 0, 1, 0]],
+                ['길드원08', '일반길드원', 102, [1, 0, 0, 0, 1]],
+                ['길드원09', '일반길드원', 97, [0, 0, 0, 1, 0]],
+                ['길드원10', '일반길드원', 103, [0, 0, 0, 0, 0]],
+            ];
+            const gradeOf = avg => avg >= 2.4 ? '다이아' : avg >= 1.8 ? '플래티넘' : avg >= 1.4 ? '골드' : avg >= 0.6 ? '실버' : avg > 0 ? '브론즈' : '관심필요';
+            const blank = () => new Array(weeks + 8).fill('');
+            const line = cells => cells.join(',');
+
+            let grandTotal = 0;
+            const weekTotals = new Array(weeks).fill(0);
+            let topCount = 0;
+            const memberLines = members.map((m, i) => {
+                const total = m[3].reduce((a, b) => a + b, 0);
+                const avg = total / weeks;
+                const grade = gradeOf(avg);
+                if (grade === '다이아') topCount++;
+                grandTotal += total;
+                m[3].forEach((v, w) => { weekTotals[w] += v; });
+                return line(['', i + 1, m[0], m[1], m[2], total + '회', avg.toFixed(1) + '회', grade, ...m[3].map(v => v + '회')]);
+            });
+
+            const n = members.length;
+            const lines = [];
+            lines.push(line(blank()));
+            const t = blank(); t[1] = '⚔️ 길드원 주간 활동 트래커'; lines.push(line(t));
+            const sub = blank(); sub[1] = '길드원별 주차별 활동량 집계 대시보드 (더미 데이터)'; lines.push(line(sub));
+            lines.push(line(blank()));
+            const l1 = blank(); l1[1] = '👥 총 길드원 수'; l1[3] = '⚡ 총 누적 활동 수'; l1[6] = '📊 주간 평균 활동(인당)'; l1[9] = '👑 활동 우수자 비율'; lines.push(line(l1));
+            const v1 = blank(); v1[1] = n + '명'; v1[3] = grandTotal + '회'; v1[6] = (grandTotal / n / weeks).toFixed(1) + '회'; v1[9] = (topCount / n * 100).toFixed(1) + '%'; lines.push(line(v1));
+            const c1 = blank(); c1[1] = '정원 관리 지표'; c1[3] = '전체 활동 총합'; c1[6] = '길드원 1인 평균'; c1[9] = '다이아 등급 이상'; lines.push(line(c1));
+            lines.push(line(blank()));
+            const head = ['', 'No.', '닉네임', '길드 직급', '레벨', '누적 활동', '주간 평균', '활동 등급'];
+            for (let w = 1; w <= weeks; w++) head.push(w + '주차');
+            lines.push(line(head));
+            lines.push(...memberLines);
+            const foot = blank();
+            foot[1] = '길드 전체 합계 및 평균'; foot[5] = grandTotal + '회'; foot[6] = (grandTotal / n / weeks).toFixed(1) + '회'; foot[7] = '활동 ' + n + ' / 50명';
+            weekTotals.forEach((v, w) => { foot[8 + w] = v + '회'; });
+            lines.push(line(foot));
+            return lines.join('\n');
+        }
 
         // CSV 텍스트 -> 2차원 배열 (따옴표/쉼표/줄바꿈 처리)
         function parseCSV(text) {
@@ -558,10 +717,16 @@
         async function loadGuildSheet() {
             const status = document.getElementById('sheetStatus');
             try {
-                const res = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const rows = parseCSV(await res.text());
-                renderGuildSheet(parseGuildSheet(rows));
+                let text;
+                if (USE_DUMMY_DATA) {
+                    text = buildDummyCSV();
+                    document.getElementById('dummyNote').style.display = 'block';
+                } else {
+                    const res = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    text = await res.text();
+                }
+                renderGuildSheet(parseGuildSheet(parseCSV(text)));
                 status.style.display = 'none';
             } catch (err) {
                 console.error('시트 불러오기 실패:', err);
@@ -674,6 +839,7 @@
             });
 
             buildInfoMenu();
+            renderLobbyNews();
             loadGuildSheet();
 
             STAT_INPUT_IDS.forEach(id => {
