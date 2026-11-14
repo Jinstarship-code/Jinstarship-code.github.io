@@ -98,9 +98,16 @@
         .lobby-title { text-align: center; margin: 25px 0; }
         .lobby-title h3 { margin: 0 0 6px; font-size: 26px; }
         .lobby-title p { margin: 0; color: var(--tab-text); }
-        .rank-grid { display: flex; gap: 20px; flex-wrap: wrap; }
-        .rank-grid .info-card { flex: 1; min-width: 300px; }
-        .weight-bar { background: var(--th-bg); text-align: center; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 15px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .stat-card { background: var(--surface); border-radius: 12px; padding: 18px 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .stat-label { font-size: 14px; color: var(--tab-text); }
+        .stat-value { font-size: 28px; font-weight: bold; color: var(--accent); margin: 6px 0; }
+        .stat-caption { font-size: 12px; color: var(--tab-text); }
+        .table-scroll { overflow-x: auto; }
+        .rank-table tfoot td { font-weight: bold; background: var(--th-bg); }
+        .grade-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; background: var(--th-bg); font-size: 13px; font-weight: bold; }
+        .grade-warn { background: #fff3cd; color: #856404; }
+        [data-theme="dark"] .grade-warn { background: #4a3f14; color: #ffe08a; }
 
         .rank-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
         .rank-table th, .rank-table td { border: none; border-bottom: 1px solid var(--th-bg); padding: 10px; font-size: 14px; font-weight: normal; background: transparent; color: var(--text-main); text-align: center; }
@@ -182,37 +189,22 @@
                     </div>
 
                     <div class="lobby-title">
-                        <h3>뱀피르 길드 종합정보</h3>
-                        <p>길드원들의 참여율과 전투력을 기반으로 한 순위 정보</p>
+                        <h3 id="sheetTitle">길드원 주간 활동 트래커</h3>
+                        <p id="sheetSubtitle"></p>
                     </div>
 
-                    <div class="rank-grid">
-                        <div class="info-card">
-                            <h3>🏆 참여율 순위</h3>
-                            <table class="rank-table">
-                                <thead><tr><th>순위</th><th>닉네임</th><th>참여점수</th><th>참여율(%)</th></tr></thead>
-                                <tbody id="participationBody"></tbody>
-                            </table>
-                            <p class="rank-foot">상위 10명 표시 (샘플 데이터)</p>
-                        </div>
-                        <div class="info-card">
-                            <h3>⚔ 전투력 순위</h3>
-                            <table class="rank-table">
-                                <thead><tr><th>순위</th><th>닉네임</th><th>전투력</th></tr></thead>
-                                <tbody id="powerBody"></tbody>
-                            </table>
-                            <p class="rank-foot">상위 10명 표시 (샘플 데이터)</p>
-                        </div>
-                    </div>
+                    <p id="sheetStatus" class="info-empty">데이터를 불러오는 중...</p>
+                    <div id="sheetStats" class="stat-grid"></div>
 
-                    <div class="info-card">
-                        <h3>🎯 종합 순위</h3>
-                        <div class="weight-bar">참여율 가중치: <b>30%</b> &nbsp;&nbsp; 전투력 가중치: <b>70%</b></div>
-                        <table class="rank-table">
-                            <thead><tr><th>순위</th><th>닉네임</th><th>종합점수(환산값)</th><th>종합점수(%)</th><th>참여율</th><th>전투력</th></tr></thead>
-                            <tbody id="totalBody"></tbody>
-                        </table>
-                        <p class="rank-foot">상위 10명 표시 (샘플 데이터)</p>
+                    <div id="sheetTableCard" class="info-card" style="display:none;">
+                        <h3>👥 길드원 활동 현황</h3>
+                        <div class="table-scroll">
+                            <table id="activityTable" class="rank-table">
+                                <thead></thead>
+                                <tbody></tbody>
+                                <tfoot></tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -362,24 +354,158 @@
             });
         }
 
-        // 로비 표 샘플 데이터 (나중에 실제 데이터로 교체)
-        function renderLobbySample() {
-            const medals = ['🥇', '🥈', '🥉'];
-            const rankCell = i => (i < 3 ? medals[i] : i + 1);
-            const scores = [4, 4, 4, 3, 3, 3, 3, 3, 3, 3];
-            const totals = [93524, 93524, 93524, 70143, 70143, 70143, 70143, 70143, 70143, 70143];
+        // ── 구글 시트(웹에 게시한 CSV) 연결 ──
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=0&single=true&output=csv';
 
-            const rows = (fn) => Array.from({ length: 10 }, (_, i) => fn(i)).join('');
+        // CSV 텍스트 -> 2차원 배열 (따옴표/쉼표/줄바꿈 처리)
+        function parseCSV(text) {
+            const rows = [];
+            let row = [];
+            let cell = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                if (inQuotes) {
+                    if (c === '"') {
+                        if (text[i + 1] === '"') { cell += '"'; i++; }
+                        else inQuotes = false;
+                    } else cell += c;
+                } else if (c === '"') {
+                    inQuotes = true;
+                } else if (c === ',') {
+                    row.push(cell); cell = '';
+                } else if (c === '\n' || c === '\r') {
+                    if (c === '\r' && text[i + 1] === '\n') i++;
+                    row.push(cell); rows.push(row); row = []; cell = '';
+                } else cell += c;
+            }
+            if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+            return rows;
+        }
 
-            document.getElementById('participationBody').innerHTML = rows(i =>
-                '<tr><td>' + rankCell(i) + '</td><td>닉네임' + (i + 1) + '</td><td>' + scores[i] + '</td><td>' + (scores[i] * 25) + '%</td></tr>');
+        const firstFilled = r => (r.find(c => c.trim() !== '') || '').trim();
 
-            document.getElementById('powerBody').innerHTML = rows(i =>
-                '<tr><td>' + rankCell(i) + '</td><td>닉네임' + (i + 1) + '</td><td>0</td></tr>');
+        // 시트 구조를 읽어서 제목/요약카드/표 데이터로 나누기 ('닉네임' 헤더 줄을 기준으로 찾음)
+        function parseGuildSheet(rows) {
+            const h = rows.findIndex(r => r.some(c => c.trim() === '닉네임'));
+            if (h < 0) throw new Error('헤더(닉네임)를 찾을 수 없습니다');
 
-            document.getElementById('totalBody').innerHTML = rows(i =>
-                '<tr><td>' + rankCell(i) + '</td><td>닉네임' + (i + 1) + '</td><td>' + totals[i].toLocaleString() +
-                '</td><td>' + (scores[i] * 25) + '%</td><td>' + (scores[i] * 25) + '%</td><td>0</td></tr>');
+            const header = rows[h].map(c => c.trim());
+            const nickIdx = header.indexOf('닉네임');
+            const colIdx = header.map((t, i) => i).filter(i => header[i] !== '');
+
+            const members = [];
+            let footer = null;
+            for (let r = h + 1; r < rows.length; r++) {
+                const row = rows[r];
+                if (row.some(c => c.trim().startsWith('길드 전체'))) { footer = row; break; }
+                if ((row[nickIdx] || '').trim() !== '') members.push(row);
+            }
+
+            const above = rows.slice(0, h).filter(r => r.some(c => c.trim() !== ''));
+            let title = '', subtitle = '', stats = [];
+            if (above.length >= 3) {
+                const [labelRow, valueRow, capRow] = above.slice(-3);
+                labelRow.forEach((cell, i) => {
+                    if (cell.trim() !== '') {
+                        stats.push({
+                            label: cell.trim(),
+                            value: (valueRow[i] || '').trim(),
+                            caption: (capRow[i] || '').trim(),
+                        });
+                    }
+                });
+                const head = above.slice(0, -3);
+                if (head[0]) title = firstFilled(head[0]);
+                if (head[1]) subtitle = firstFilled(head[1]);
+            }
+            return { header, colIdx, members, footer, title, subtitle, stats };
+        }
+
+        function makeCell(tag, text, className) {
+            const el = document.createElement(tag);
+            el.textContent = text;
+            if (className) el.className = className;
+            return el;
+        }
+
+        function renderGuildSheet(data) {
+            const { header, colIdx, members, footer, title, subtitle, stats } = data;
+
+            if (title) document.getElementById('sheetTitle').textContent = title;
+            document.getElementById('sheetSubtitle').textContent = subtitle;
+
+            // 요약 카드
+            const statsBox = document.getElementById('sheetStats');
+            statsBox.innerHTML = '';
+            stats.forEach(st => {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                card.appendChild(makeCell('div', st.label, 'stat-label'));
+                card.appendChild(makeCell('div', st.value || '-', 'stat-value'));
+                card.appendChild(makeCell('div', st.caption, 'stat-caption'));
+                statsBox.appendChild(card);
+            });
+
+            // 표 머리
+            const table = document.getElementById('activityTable');
+            const thead = table.querySelector('thead');
+            const tbody = table.querySelector('tbody');
+            const tfoot = table.querySelector('tfoot');
+            thead.innerHTML = ''; tbody.innerHTML = ''; tfoot.innerHTML = '';
+
+            const headRow = document.createElement('tr');
+            colIdx.forEach(i => headRow.appendChild(makeCell('th', header[i])));
+            thead.appendChild(headRow);
+
+            // 길드원 줄
+            members.forEach(row => {
+                const tr = document.createElement('tr');
+                colIdx.forEach(i => {
+                    const text = (row[i] || '').trim() || '-';
+                    if (header[i] === '활동 등급' && text !== '-') {
+                        const td = document.createElement('td');
+                        td.appendChild(makeCell('span', text, 'grade-badge' + (text === '관심필요' ? ' grade-warn' : '')));
+                        tr.appendChild(td);
+                    } else {
+                        tr.appendChild(makeCell('td', text));
+                    }
+                });
+                tbody.appendChild(tr);
+            });
+
+            // 합계 줄
+            if (footer) {
+                const labelIdx = footer.findIndex(c => c.trim() !== '');
+                const nextIdx = footer.findIndex((c, i) => i > labelIdx && c.trim() !== '');
+                const tr = document.createElement('tr');
+                const spanCols = colIdx.filter(i => i >= labelIdx && (nextIdx < 0 || i < nextIdx));
+                const labelTd = makeCell('td', footer[labelIdx].trim());
+                labelTd.colSpan = Math.max(spanCols.length, 1);
+                tr.appendChild(labelTd);
+                if (nextIdx >= 0) {
+                    colIdx.filter(i => i >= nextIdx).forEach(i => {
+                        tr.appendChild(makeCell('td', (footer[i] || '').trim() || '-'));
+                    });
+                }
+                tfoot.appendChild(tr);
+            }
+
+            document.getElementById('sheetTableCard').style.display = 'block';
+        }
+
+        async function loadGuildSheet() {
+            const status = document.getElementById('sheetStatus');
+            try {
+                const res = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const rows = parseCSV(await res.text());
+                renderGuildSheet(parseGuildSheet(rows));
+                status.style.display = 'none';
+            } catch (err) {
+                console.error('시트 불러오기 실패:', err);
+                status.textContent = '데이터를 불러오지 못했습니다. 잠시 후 새로고침 해주세요.';
+            }
         }
 
         // ── 탭 전환 ──
@@ -487,7 +613,7 @@
             });
 
             buildInfoMenu();
-            renderLobbySample();
+            loadGuildSheet();
 
             STAT_INPUT_IDS.forEach(id => {
                 document.getElementById(id).addEventListener('input', checkBosses);
