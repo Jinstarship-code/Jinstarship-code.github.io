@@ -79,22 +79,38 @@
         .gacha-results { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 25px; }
         .gacha-card { width: 70px; height: 70px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
-        /* 정보 탭 */
-        .info-layout { display: flex; gap: 20px; align-items: flex-start; max-width: 1200px; margin: 0 auto; }
-        .info-menu { width: 170px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; background: var(--surface); border-radius: 8px; padding: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .info-menu-item { text-align: left; background: none; border: none; border-radius: 6px; padding: 12px 14px; font-size: 15px; font-weight: bold; color: var(--text-main); cursor: pointer; }
+        /* 정보 탭 (길드 활동 정리) */
+        .info-layout { display: flex; gap: 20px; align-items: flex-start; max-width: 1400px; margin: 0 auto; }
+        .info-menu { width: 220px; flex-shrink: 0; background: var(--surface); border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
+        .info-menu-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid var(--th-bg); padding: 10px 14px; font-size: 15px; font-family: inherit; color: var(--text-main); cursor: pointer; }
         .info-menu-item:hover { background: var(--th-bg); }
-        .info-menu-item.active { background: var(--input-bg); color: var(--accent); }
-        .info-panel-wrap { flex: 1; background: var(--surface); border-radius: 8px; padding: 25px 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 0; }
-        .info-content { display: none; font-size: 15px; line-height: 1.8; text-align: left; font-weight: normal; }
+        .info-menu-item.active { background: var(--th-bg); font-weight: bold; }
+        .info-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--th-bg); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; flex-shrink: 0; }
+        .info-menu-item.active .info-avatar { background: #3b82c4; color: #fff; }
+
+        .info-panel-wrap { flex: 1; min-width: 0; }
+        .info-content { display: none; }
         .info-content.active { display: block; }
-        .info-content h4 { font-size: 17px; margin: 0 0 10px; }
-        .info-content h5 { font-size: 15px; margin: 18px 0 8px; }
-        .info-content .info-ex { background: var(--th-bg); border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 14px; }
-        .info-content table { margin-top: 10px; font-size: 14px; }
-        .info-content th { background: var(--accent); color: #fff; }
-        .info-content td { background: var(--surface); font-weight: normal; }
-        .info-content .info-foot { font-size: 13px; color: var(--tab-text); margin-top: 14px; }
+
+        .info-card { background: var(--surface); border-radius: 12px; padding: 20px 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .info-card h3 { margin: 0 0 14px; font-size: 18px; }
+        .info-empty { text-align: center; color: var(--tab-text); padding: 30px 0; margin: 0; }
+        .lobby-title { text-align: center; margin: 25px 0; }
+        .lobby-title h3 { margin: 0 0 6px; font-size: 26px; }
+        .lobby-title p { margin: 0; color: var(--tab-text); }
+        .rank-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .rank-grid .info-card { flex: 1; min-width: 300px; }
+        .weight-bar { background: var(--th-bg); text-align: center; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 15px; }
+
+        .rank-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+        .rank-table th, .rank-table td { border: none; border-bottom: 1px solid var(--th-bg); padding: 10px; font-size: 14px; font-weight: normal; background: transparent; color: var(--text-main); text-align: center; }
+        .rank-table th { font-weight: bold; }
+        .rank-foot { text-align: center; font-size: 12px; color: var(--tab-text); margin: 0; }
+
+        @media (max-width: 700px) {
+            .info-layout { flex-direction: column; }
+            .info-menu { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -152,65 +168,51 @@
         </div>
     </div>
 
-    <!-- 정보 탭 -->
+    <!-- 정보 탭 (길드 활동 정리) -->
     <div id="info" class="tab-content">
         <div class="info-layout">
-            <div class="info-menu">
-                <button class="info-menu-item active" data-info="prize">쟁탈전 상금</button>
-            </div>
+            <div id="infoMenu" class="info-menu"></div>
 
-            <div class="info-panel-wrap">
-                <!-- 쟁탈전 상금 -->
-                <div id="info-prize" class="info-content active">
-                    <h4>● 상금 및 기여도 보상</h4>
-
-                    <h5>1. 상금 산정</h5>
-                    <p>- 전초전 참가 클랜 선발 완료 시, 거래소에 누적된 각 세금 중 50%가 쟁탈전 상금으로 확정됩니다.</p>
-                    <p>* 전초전 상금 : 서버 누적 세금의 50%<br>* 결승전 상금 : 서버 그룹 누적 세금의 50%</p>
-
-                    <div class="info-ex">
-                        (ex. '서버 누적 세금'이 2,000,000다이아, '서버 그룹 누적 세금'이 10,000,000 다이아일 경우<br>
-                        정규시즌 쟁탈전 상금은 아래와 같습니다.<br>
-                        &nbsp;&nbsp;- 전초전 : 2,000,000 X 50% = 1,000,000 다이아<br>
-                        &nbsp;&nbsp;- 결승전 : 10,000,000 X 50% = 5,000,000 다이아 )
+            <div id="infoPanelWrap" class="info-panel-wrap">
+                <!-- 로비 -->
+                <div id="info-lobby" class="info-content active">
+                    <div class="info-card">
+                        <h3>공지</h3>
+                        <p class="info-empty">공지사항이 없습니다.</p>
                     </div>
 
-                    <p>- 상금 확정 이후 발생하는 거래소 세금은 다음 시즌 상금으로 누적됩니다.<br>
-                    - 서버에 누적된 세금은 [거래소 → 세율 정보]에서 확인할 수 있습니다.</p>
+                    <div class="lobby-title">
+                        <h3>뱀피르 길드 종합정보</h3>
+                        <p>길드원들의 참여율과 전투력을 기반으로 한 순위 정보</p>
+                    </div>
 
-                    <h5>2. 쟁탈전 상금 및 기여도 보상</h5>
-                    <table>
-                        <tr>
-                            <th>라운드</th>
-                            <th>순위</th>
-                            <th>상금 및 기여도 보상</th>
-                        </tr>
-                        <tr>
-                            <td>전초전</td>
-                            <td>1위 클랜</td>
-                            <td>우승 상금: 전초전 상금</td>
-                        </tr>
-                        <tr>
-                            <td rowspan="3">결승전</td>
-                            <td>1위 클랜</td>
-                            <td>우승 상금: 결승전 상금의 60%</td>
-                        </tr>
-                        <tr>
-                            <td>1위 클랜</td>
-                            <td>기여도 보상: 결승전 상금의 40% 중 점수 획득량에 따라 분배</td>
-                        </tr>
-                        <tr>
-                            <td>2위 클랜</td>
-                            <td>기여도 보상: 결승전상금의 40% 중 점수 획득량에 따라 분배</td>
-                        </tr>
-                    </table>
+                    <div class="rank-grid">
+                        <div class="info-card">
+                            <h3>🏆 참여율 순위</h3>
+                            <table class="rank-table">
+                                <thead><tr><th>순위</th><th>닉네임</th><th>참여점수</th><th>참여율(%)</th></tr></thead>
+                                <tbody id="participationBody"></tbody>
+                            </table>
+                            <p class="rank-foot">상위 10명 표시 (샘플 데이터)</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>⚔ 전투력 순위</h3>
+                            <table class="rank-table">
+                                <thead><tr><th>순위</th><th>닉네임</th><th>전투력</th></tr></thead>
+                                <tbody id="powerBody"></tbody>
+                            </table>
+                            <p class="rank-foot">상위 10명 표시 (샘플 데이터)</p>
+                        </div>
+                    </div>
 
-                    <div class="info-foot">
-                        * 상금 다이아는 클랜 금고로 지급되며, 상금 지급 시 클랜원 전체에게 알림 우편이 발송됩니다.<br>
-                        * 기여도 보상은 총 상금(산정완료된 다이아)의 40%를 클랜 별 결승전 점수 획득량에 비례하여 지급합니다.<br>
-                        &nbsp;&nbsp;(ex. 결승전의 우승 상금이 5,000,000 다이아이고, 1위 클랜이 10,000점, 2위 클랜이 2,500점 획득했을 경우,<br>
-                        &nbsp;&nbsp;2위 클랜의 기여도 보상은 5,000,000 x 40% x {2,500/(10,000+2,500)} = 400,000 다이아 입니다.)<br>
-                        * 상금은 승리 및 기여도 보상이 합산되어 클랜 금고로 지급됩니다.
+                    <div class="info-card">
+                        <h3>🎯 종합 순위</h3>
+                        <div class="weight-bar">참여율 가중치: <b>30%</b> &nbsp;&nbsp; 전투력 가중치: <b>70%</b></div>
+                        <table class="rank-table">
+                            <thead><tr><th>순위</th><th>닉네임</th><th>종합점수(환산값)</th><th>종합점수(%)</th><th>참여율</th><th>전투력</th></tr></thead>
+                            <tbody id="totalBody"></tbody>
+                        </table>
+                        <p class="rank-foot">상위 10명 표시 (샘플 데이터)</p>
                     </div>
                 </div>
             </div>
@@ -304,12 +306,80 @@
             document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
         }
 
-        // ── 정보 탭 왼쪽 메뉴 전환 ──
+        // ── 정보 탭: 왼쪽 메뉴 목록 (항목 추가/수정은 여기만) ──
+        const INFO_MENUS = [
+            { key: 'lobby', label: '로비' },
+            { key: 'myinfo', label: '내 정보 확인' },
+            { key: 'bosstimer', label: '보탐타이머' },
+            { key: 'participation', label: '참여율 조회' },
+            { key: 'bosslog', label: '보스 참여내역 조회' },
+            { key: 'payout', label: '분배금 조회' },
+            { key: 'bank', label: '통장 현황' },
+            { key: 'ledger', label: '장부 조회' },
+            { key: 'auction', label: '경매/입찰' },
+            { key: 'items', label: '아이템 현황' },
+            { key: 'mypage', label: '마이페이지' },
+            { key: 'admin', label: '관리자 설정' },
+        ];
+
         function openInfo(key) {
             document.querySelectorAll('.info-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.info-menu-item').forEach(b => b.classList.remove('active'));
             document.getElementById('info-' + key).classList.add('active');
             document.querySelector('.info-menu-item[data-info="' + key + '"]').classList.add('active');
+        }
+
+        // 메뉴 버튼 생성 + 로비 외 항목은 '준비 중' 화면 자동 생성
+        function buildInfoMenu() {
+            const menu = document.getElementById('infoMenu');
+            const panelWrap = document.getElementById('infoPanelWrap');
+
+            INFO_MENUS.forEach((item, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'info-menu-item' + (i === 0 ? ' active' : '');
+                btn.dataset.info = item.key;
+
+                const avatar = document.createElement('span');
+                avatar.className = 'info-avatar';
+                avatar.textContent = item.label.charAt(0);
+
+                const label = document.createElement('span');
+                label.textContent = item.label;
+
+                btn.appendChild(avatar);
+                btn.appendChild(label);
+                btn.addEventListener('click', () => openInfo(item.key));
+                menu.appendChild(btn);
+
+                if (!document.getElementById('info-' + item.key)) {
+                    const panel = document.createElement('div');
+                    panel.id = 'info-' + item.key;
+                    panel.className = 'info-content';
+                    panel.innerHTML = '<div class="info-card"><h3></h3><p class="info-empty">준비 중입니다.</p></div>';
+                    panel.querySelector('h3').textContent = item.label;
+                    panelWrap.appendChild(panel);
+                }
+            });
+        }
+
+        // 로비 표 샘플 데이터 (나중에 실제 데이터로 교체)
+        function renderLobbySample() {
+            const medals = ['🥇', '🥈', '🥉'];
+            const rankCell = i => (i < 3 ? medals[i] : i + 1);
+            const scores = [4, 4, 4, 3, 3, 3, 3, 3, 3, 3];
+            const totals = [93524, 93524, 93524, 70143, 70143, 70143, 70143, 70143, 70143, 70143];
+
+            const rows = (fn) => Array.from({ length: 10 }, (_, i) => fn(i)).join('');
+
+            document.getElementById('participationBody').innerHTML = rows(i =>
+                '<tr><td>' + rankCell(i) + '</td><td>닉네임' + (i + 1) + '</td><td>' + scores[i] + '</td><td>' + (scores[i] * 25) + '%</td></tr>');
+
+            document.getElementById('powerBody').innerHTML = rows(i =>
+                '<tr><td>' + rankCell(i) + '</td><td>닉네임' + (i + 1) + '</td><td>0</td></tr>');
+
+            document.getElementById('totalBody').innerHTML = rows(i =>
+                '<tr><td>' + rankCell(i) + '</td><td>닉네임' + (i + 1) + '</td><td>' + totals[i].toLocaleString() +
+                '</td><td>' + (scores[i] * 25) + '%</td><td>' + (scores[i] * 25) + '%</td><td>0</td></tr>');
         }
 
         // ── 탭 전환 ──
@@ -416,9 +486,8 @@
                 btn.addEventListener('click', () => openTab(btn.dataset.tab));
             });
 
-            document.querySelectorAll('.info-menu-item').forEach(btn => {
-                btn.addEventListener('click', () => openInfo(btn.dataset.info));
-            });
+            buildInfoMenu();
+            renderLobbySample();
 
             STAT_INPUT_IDS.forEach(id => {
                 document.getElementById(id).addEventListener('input', checkBosses);
