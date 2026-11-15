@@ -94,7 +94,9 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .lobby-title { text-align: center; margin: 25px 0; }
 .lobby-title h3 { margin: 0 0 6px; font-size: 26px; }
 .lobby-title p { margin: 0; color: var(--tab-text); }
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+.stat-grid > * { min-width: 0; }
+@media (min-width: 701px) { .stat-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
 .stat-card { position: relative; background: var(--surface); border-radius: 14px; padding: 22px 20px 16px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; }
 .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent), #ff9a76); }
 .stat-label { font-size: 14px; color: var(--tab-text); }
@@ -102,6 +104,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .stat-caption { font-size: 12px; color: var(--tab-text); }
 
 .table-scroll { overflow-x: auto; }
+.swipe-hint { display: none; font-size: 12px; color: var(--tab-text); margin: -6px 0 10px; }
 .member-table { width: 100%; min-width: 780px; margin: 0; border-collapse: separate; border-spacing: 0 6px; }
 .member-table th { border: none; background: transparent; padding: 6px 10px; font-size: 12px; font-weight: bold; color: var(--tab-text); text-align: center; white-space: nowrap; }
 .member-table td { border: none; background: var(--th-bg); padding: 11px 10px; font-size: 14px; font-weight: normal; text-align: center; color: var(--text-main); white-space: nowrap; transition: background 0.15s ease; }
@@ -173,7 +176,11 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
     .notice-card { padding: 18px 16px; }
 
     /* 정보 탭 */
-    .info-layout { flex-direction: column; gap: 12px; }
+    .info-layout { flex-direction: column; align-items: stretch; gap: 12px; }
+    .info-panel-wrap { width: 100%; }
+    .info-card { min-width: 0; }
+    .table-scroll { max-width: 100%; -webkit-overflow-scrolling: touch; }
+    .swipe-hint { display: block; }
     .info-menu { display: flex; width: 100%; overflow-x: auto; scrollbar-width: none; }
     .info-menu::-webkit-scrollbar { display: none; }
     .info-menu-item { flex-shrink: 0; width: auto; white-space: nowrap; border-bottom: none; padding: 10px 14px; font-size: 14px; }
