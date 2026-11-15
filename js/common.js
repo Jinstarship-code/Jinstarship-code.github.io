@@ -36,7 +36,9 @@ function openTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-    const activeBtn = document.getElementById('btn-' + tabId);
+    // 유틸리티 메뉴 안에 있는 탭이면 상단의 '유틸리티' 버튼을 강조
+    const inUtility = UTILITY_ITEMS.some(item => item.key === tabId);
+    const activeBtn = document.getElementById(inUtility ? 'btn-utility' : 'btn-' + tabId);
     activeBtn.classList.add('active');
     if (activeBtn.scrollIntoView) activeBtn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
 }

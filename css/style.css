@@ -144,6 +144,17 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 [data-theme="dark"] .grade-silver { background: #3a3d44; color: #cbd5e1; }
 [data-theme="dark"] .grade-bronze { background: #5a2d12; color: #fed7aa; }
 
+/* 상단 '유틸리티' 드롭다운 */
+.submenu { position: fixed; display: none; min-width: 190px; padding: 6px; background: var(--surface); border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1100; }
+.submenu.open { display: block; }
+.submenu-item { display: block; width: 100%; text-align: left; background: none; border: none; border-radius: 8px; padding: 11px 14px; font-family: inherit; font-size: 15px; font-weight: bold; color: var(--text-main); cursor: pointer; white-space: nowrap; }
+.submenu-item:hover { background: var(--th-bg); }
+.submenu-item.active { background: var(--input-bg); color: var(--accent); }
+
+/* 가챠 케어포인트 */
+.care-goal { color: var(--tab-text); font-size: 14px; margin-left: 2px; }
+.pity-badge { align-items: center; gap: 6px; margin-left: 12px; padding: 3px 12px; border-radius: 14px; background: linear-gradient(135deg, #fde68a, #f5c518); color: #5a4400; font-size: 14px; font-weight: bold; vertical-align: middle; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+
 /* 로비 탭 카드 */
 .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 380px)); justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; }
 .news-card { position: relative; display: block; width: 100%; text-align: left; font-family: inherit; color: var(--text-main); background: var(--surface); border: none; border-radius: 14px; padding: 26px 22px 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }

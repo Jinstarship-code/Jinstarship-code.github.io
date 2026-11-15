@@ -5,10 +5,11 @@ function init() {
     initTheme();
     buildBossTable();
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
         btn.addEventListener('click', () => openTab(btn.dataset.tab));
     });
 
+    buildUtilityMenu();
     buildInfoMenu();
     renderLobbyCards();
     renderNotices();
@@ -22,6 +23,7 @@ function init() {
     document.getElementById('gachaResetBtn').addEventListener('click', resetGachaDia);
 
     checkBosses();
+    updateGachaDisplay();
 }
 
 document.addEventListener('DOMContentLoaded', init);

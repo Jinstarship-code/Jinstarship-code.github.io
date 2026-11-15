@@ -17,10 +17,12 @@
         <button id="btn-lobby" class="tab-btn active" data-tab="lobby">🏠 로비</button>
         <button id="btn-notice" class="tab-btn" data-tab="notice">📢 공지사항</button>
         <button id="btn-info" class="tab-btn" data-tab="info">📖 정보</button>
-        <button id="btn-accuracy" class="tab-btn" data-tab="accuracy">🎯 명중 계산</button>
-        <button id="btn-gacha" class="tab-btn" data-tab="gacha">🎰 가챠 시뮬레이션</button>
+        <button id="btn-utility" class="tab-btn" aria-haspopup="true" aria-expanded="false">🧰 유틸리티 ▾</button>
         <button id="btn-settings" class="tab-btn" data-tab="settings">⚙ 설정</button>
     </div>
+
+    <!-- 유틸리티 드롭다운 (항목은 js/data.js의 UTILITY_ITEMS) -->
+    <div id="utilityMenu" class="submenu"></div>
 
     <!-- 명중 계산 탭 -->
     <div id="accuracy" class="tab-content">
@@ -57,6 +59,13 @@
                 </div>
                 <div class="gacha-dia-row">
                     누적 사용 다이아: <span id="gachaDiaTotal" class="total-box">0</span>
+                </div>
+                <div class="gacha-dia-row">
+                    케어포인트: <span id="gachaCarePoints" class="total-box">0</span><span id="gachaCareGoal" class="care-goal"></span>
+                    <span id="gachaPityBadge" class="pity-badge" style="display:none;">
+                        <svg viewBox="0 0 24 32" width="15" height="20" aria-hidden="true"><rect x="1.5" y="1.5" width="21" height="29" rx="3" fill="#f5c518" stroke="#b8860b" stroke-width="1.5"/><path d="M12 8l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill="#fff8dc"/></svg>
+                        <span id="gachaPityText"></span>
+                    </span>
                 </div>
                 <div id="gachaResults" class="gacha-results"></div>
             </div>
@@ -136,6 +145,7 @@
 
     <script src="js/data.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/menu.js"></script>
     <script src="js/accuracy.js"></script>
     <script src="js/gacha.js"></script>
     <script src="js/lobby.js"></script>

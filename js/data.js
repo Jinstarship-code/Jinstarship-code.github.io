@@ -38,14 +38,24 @@ const STAT_INPUT_IDS = ['stat1', 'stat2', 'stat3', 'stat4'];
 
 // ── 가챠 데이터: 확률(%)과 등급 색상 ──
 const GACHA_GRADES = [
-    { name: '전설', rate: 0.015, bg: '#f5c518', text: '#5a4400' },   // 황금색
-    { name: '영웅', rate: 0.2,   bg: '#9b59b6', text: '#ffffff' },   // 보라색
-    { name: '희귀', rate: 2.1,   bg: '#5dade2', text: '#ffffff' },   // 하늘색
-    { name: '고급', rate: 23,    bg: '#a9dc76', text: '#2d4a12' },   // 연두색
-    { name: '일반', rate: 100 - (0.015 + 0.2 + 2.1 + 23), bg: '#d9d9d9', text: '#555555' }, // 연회색 (나머지)
+    { name: '전설', rate: 0.015, bg: '#f5c518', text: '#5a4400', care: 0 },   // 황금색
+    { name: '영웅', rate: 0.2,   bg: '#9b59b6', text: '#ffffff', care: 0 },   // 보라색
+    { name: '희귀', rate: 2.1,   bg: '#5dade2', text: '#ffffff', care: 1 },   // 하늘색
+    { name: '고급', rate: 23,    bg: '#a9dc76', text: '#2d4a12', care: 3 },   // 연두색
+    { name: '일반', rate: 100 - (0.015 + 0.2 + 2.1 + 23), bg: '#d9d9d9', text: '#555555', care: 5 }, // 연회색 (나머지)
 ];
 
 const GACHA_COST_PER_PULL = 2000; // 11연차 1회당 다이아
+
+// 케어포인트: 카드 1장을 뽑을 때마다 등급별 care 값만큼 쌓이고, 아래 목표에 도달하면 천장 1회 달성
+const GACHA_CARE_GOAL = 9000;
+
+// ── 상단 '유틸리티' 메뉴에 들어가는 항목 (key = 탭 id) ──
+// 새 기능을 추가할 땐: index.html에 <div id="키" class="tab-content"> 탭을 만들고, 여기에 한 줄만 추가하면 메뉴에 나타납니다.
+const UTILITY_ITEMS = [
+    { key: 'accuracy', label: '🎯 명중 계산' },
+    { key: 'gacha', label: '🎰 가챠 시뮬레이션' },
+];
 
 // ── 공지사항 내용 (여기만 고치면 됩니다) ──
 const NOTICES = [

@@ -1,8 +1,8 @@
 // 🎰 가챠 시뮬레이션 탭
 
 let gachaDiaTotal = 0;
-
 let gachaPullCount = 0;
+let gachaCarePoints = 0;
 
 // ── 가챠 1회 뽑기: 확률 누적 방식으로 등급 결정 ──
 function pullOneGacha() {
@@ -28,18 +28,30 @@ function renderGachaResults(results) {
     });
 }
 
+// 횟수 / 누적 다이아 / 케어포인트 / 천장 달성 표시를 현재 값으로 다시 그림
+function updateGachaDisplay() {
+    document.getElementById('gachaPullCount').textContent = gachaPullCount.toLocaleString();
+    document.getElementById('gachaDiaTotal').textContent = gachaDiaTotal.toLocaleString();
+    document.getElementById('gachaCarePoints').textContent = gachaCarePoints.toLocaleString();
+    document.getElementById('gachaCareGoal').textContent = '/' + GACHA_CARE_GOAL.toLocaleString() + 'p';
+
+    const reached = Math.floor(gachaCarePoints / GACHA_CARE_GOAL); // 천장 달성 횟수
+    document.getElementById('gachaPityBadge').style.display = reached > 0 ? 'inline-flex' : 'none';
+    document.getElementById('gachaPityText').textContent = reached + ' 천장 달성';
+}
+
 function doGachaPull() {
     const results = Array.from({ length: 11 }, pullOneGacha);
     renderGachaResults(results);
     gachaPullCount += 1;
     gachaDiaTotal += GACHA_COST_PER_PULL;
-    document.getElementById('gachaPullCount').textContent = gachaPullCount.toLocaleString();
-    document.getElementById('gachaDiaTotal').textContent = gachaDiaTotal.toLocaleString();
+    gachaCarePoints += results.reduce((sum, grade) => sum + (grade.care || 0), 0);
+    updateGachaDisplay();
 }
 
 function resetGachaDia() {
     gachaPullCount = 0;
     gachaDiaTotal = 0;
-    document.getElementById('gachaPullCount').textContent = '0';
-    document.getElementById('gachaDiaTotal').textContent = '0';
+    gachaCarePoints = 0;
+    updateGachaDisplay();
 }
