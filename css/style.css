@@ -133,6 +133,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .grade-gold { background: #fef3c7; color: #b45309; }
 .grade-silver { background: #e5e7eb; color: #4b5563; }
 .grade-bronze { background: #fed7aa; color: #9a3412; }
+.grade-quit { background: #e5e7eb; color: #9ca3af; }
 [data-theme="dark"] .role-badge, [data-theme="dark"] .grade-badge { background: #3a3d44; color: #cbd5e1; }
 [data-theme="dark"] .role-leader { background: #5c4a12; color: #fde68a; }
 [data-theme="dark"] .role-sub { background: #46285e; color: #e9d5ff; }
@@ -143,6 +144,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 [data-theme="dark"] .grade-gold { background: #5c4a12; color: #fde68a; }
 [data-theme="dark"] .grade-silver { background: #3a3d44; color: #cbd5e1; }
 [data-theme="dark"] .grade-bronze { background: #5a2d12; color: #fed7aa; }
+[data-theme="dark"] .grade-quit { background: #2c2e33; color: #777; }
 
 /* 상단 '유틸리티' 드롭다운 */
 .submenu { position: fixed; display: none; min-width: 190px; padding: 6px; background: var(--surface); border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1100; }
@@ -154,6 +156,16 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 /* 가챠 케어포인트 */
 .care-goal { color: var(--tab-text); font-size: 14px; margin-left: 2px; }
 .pity-badge { align-items: center; gap: 6px; margin-left: 12px; padding: 3px 12px; border-radius: 14px; background: linear-gradient(135deg, #fde68a, #f5c518); color: #5a4400; font-size: 14px; font-weight: bold; vertical-align: middle; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+
+/* 정보 탭: 하위 메뉴 + 클랜 표시 */
+.info-parent .info-caret { margin-left: auto; font-size: 12px; color: var(--tab-text); }
+.info-group.has-active > .info-parent { font-weight: bold; color: var(--accent); }
+.info-group.has-active > .info-parent .info-avatar { background: #3b82c4; color: #fff; }
+.info-sub { padding: 0 0 6px 28px; }
+.info-child { gap: 10px; padding: 9px 14px; font-size: 14px; border-bottom: none; }
+.info-child::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tab-text); opacity: 0.5; flex-shrink: 0; }
+.info-child.active::before { background: var(--accent); opacity: 1; }
+.clan-chip { display: inline-block; padding: 3px 14px; margin-bottom: 8px; border-radius: 14px; background: var(--accent); color: #fff; font-size: 13px; font-weight: bold; }
 
 /* 로비 탭 카드 */
 .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 380px)); justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; }
@@ -196,6 +208,10 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
     .info-menu::-webkit-scrollbar { display: none; }
     .info-menu-item { flex-shrink: 0; width: auto; white-space: nowrap; border-bottom: none; padding: 10px 14px; font-size: 14px; }
     .info-card { padding: 14px 12px; }
+    .info-group { display: flex; align-items: center; flex-shrink: 0; }
+    .info-sub { display: flex; padding: 0; }
+    .info-child { padding: 10px 14px; }
+    .info-caret { display: none; }
     .info-card h3 { font-size: 16px; }
 
     /* 요약 카드 2x2 */

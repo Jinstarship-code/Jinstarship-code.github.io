@@ -72,14 +72,20 @@ const LOBBY_CARDS = [
     { title: '스케줄 공지', icon: '📅', color: '#cc0000', desc: '이번 주 스케줄을 확인하세요', noticeKey: 'schedule' },
 ];
 
-// ── 정보 탭: 왼쪽 메뉴 목록 (항목 추가/수정은 여기만) ──
+// ── 정보 탭 왼쪽 메뉴 ──
+// children = 하위 메뉴, sheetUrl = 그 클랜 구글 시트(웹에 게시한 CSV)의 주소
+//  - 시트 탭마다 주소가 다릅니다: 구글 시트 > 파일 > 공유 > 웹에 게시 > 해당 시트 탭 선택 > 쉼표로 구분된 값(.csv) > 게시
+//  - sheetUrl을 '' (빈 값)으로 두면 화면에 '준비 중입니다'로 표시됩니다.
 const INFO_MENUS = [
-    { key: 'weekly', label: '주간 활동' },
+    {
+        key: 'weekly', label: '주간 활동',
+        children: [
+            { key: 'weekly-nanneo', label: '난너만패', sheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=0&single=true&output=csv' },
+            { key: 'weekly-waena', label: '왜나만패', sheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=437010863&single=true&output=csv' },
+        ],
+    },
 ];
 
-// ── 구글 시트(웹에 게시한 CSV) 연결 ──
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=0&single=true&output=csv';
-
-// true: 미리보기용 더미 데이터 / false: 위 구글 시트에서 실제 데이터 불러오기
+// true: 미리보기용 더미 데이터 / false: 위 구글 시트 주소에서 실제 데이터 불러오기
 // (실제 사이트에 올릴 때는 false로 바꿔주세요)
 const USE_DUMMY_DATA = false;
