@@ -127,6 +127,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .role-leader { background: #fde68a; color: #92400e; }
 .role-sub { background: #e9d5ff; color: #6b21a8; }
 .role-elite { background: #bfdbfe; color: #1e40af; }
+.role-lead { background: #fbcfe8; color: #9d174d; }
 .grade-warn { background: #fff3cd; color: #856404; }
 .grade-diamond { background: #cffafe; color: #0e7490; }
 .grade-platinum { background: #ccfbf1; color: #0f766e; }
@@ -138,6 +139,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 [data-theme="dark"] .role-leader { background: #5c4a12; color: #fde68a; }
 [data-theme="dark"] .role-sub { background: #46285e; color: #e9d5ff; }
 [data-theme="dark"] .role-elite { background: #1e3a5f; color: #bfdbfe; }
+[data-theme="dark"] .role-lead { background: #5b2342; color: #fbcfe8; }
 [data-theme="dark"] .grade-warn { background: #4a3f14; color: #ffe08a; }
 [data-theme="dark"] .grade-diamond { background: #164e63; color: #a5f3fc; }
 [data-theme="dark"] .grade-platinum { background: #134e4a; color: #99f6e4; }
@@ -166,6 +168,13 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .info-child::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tab-text); opacity: 0.5; flex-shrink: 0; }
 .info-child.active::before { background: var(--accent); opacity: 1; }
 .clan-chip { display: inline-block; padding: 3px 14px; margin-bottom: 8px; border-radius: 14px; background: var(--accent); color: #fff; font-size: 13px; font-weight: bold; }
+
+/* 표 정렬 (머리글을 누르면 정렬) */
+.member-table th.sortable { cursor: pointer; user-select: none; }
+.member-table th.sortable:hover { color: var(--accent); }
+.sort-ind { display: inline-block; width: 12px; margin-left: 3px; font-size: 10px; opacity: 0.45; }
+.member-table th[data-sort] { color: var(--accent); }
+.member-table th[data-sort] .sort-ind { opacity: 1; }
 
 /* 로비 탭 카드 */
 .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 380px)); justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; }

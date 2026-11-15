@@ -174,6 +174,7 @@ function parseGuildSheet(rows) {
 function roleClass(t) {
     if (t.includes('부길드장')) return 'role-sub';
     if (t.includes('길드장')) return 'role-leader';
+    if (t.includes('리더')) return 'role-lead';
     if (t.includes('정예')) return 'role-elite';
     return '';
 }
@@ -189,8 +190,117 @@ function gradeClass(t) {
     return '';
 }
 
+// ── 표 정렬 ──
+// 정렬할 수 있는 열: 직급·등급(순서표 기준), 숫자 열(레벨·누적·평균·주차)
+function sortTypeOf(name) {
+    if (name === '길드 직급' || name === '활동 등급') return 'rank';
+    if (name === '레벨' || name === '누적 활동' || name === '주간 평균' || /^\d+주차$/.test(name)) return 'number';
+    return null;
+}
+
+// "1,923회", "14.0회", "104" 같은 글자에서 숫자만 꺼냄 (비어 있으면 null)
+function parseNumber(text) {
+    const m = String(text || '').replace(/,/g, '').match(/-?\d+(\.\d+)?/);
+    return m ? parseFloat(m[0]) : null;
+}
+
+// 순서표에서의 높낮이 (높은 등급일수록 큰 값, 표에 없는 글자는 null)
+function rankOf(name, text) {
+    const list = name === '길드 직급' ? ROLE_ORDER : GRADE_ORDER;
+    const idx = list.indexOf(String(text || '').trim().replace('플레티넘', '플래티넘'));
+    return idx < 0 ? null : list.length - idx;
+}
+
+function sortValue(row, i, name) {
+    const text = (row[i] || '').trim();
+    return sortTypeOf(name) === 'rank' ? rankOf(name, text) : parseNumber(text);
+}
+
+// 정렬된 길드원 목록 (비어 있거나 모르는 값은 오름/내림차순 모두 맨 아래)
+function sortedMembers(data, sort) {
+    const items = data.members.map((row, idx) => ({ row, idx }));
+    if (!sort.name) return items.map(it => it.row);
+    const col = data.header.indexOf(sort.name);
+    const factor = sort.dir === 'asc' ? 1 : -1;
+    items.sort((a, b) => {
+        const va = sortValue(a.row, col, sort.name);
+        const vb = sortValue(b.row, col, sort.name);
+        if (va === null && vb === null) return a.idx - b.idx;
+        if (va === null) return 1;
+        if (vb === null) return -1;
+        if (va !== vb) return (va - vb) * factor;
+        return a.idx - b.idx;
+    });
+    return items.map(it => it.row);
+}
+
+// 머리글을 누를 때마다: 내림차순 → 오름차순 → 원래 순서
+function toggleSort(root, name) {
+    const sort = root._sheet.sort;
+    if (sort.name !== name) { sort.name = name; sort.dir = 'desc'; }
+    else if (sort.dir === 'desc') { sort.dir = 'asc'; }
+    else { sort.name = null; sort.dir = null; }
+    renderMemberRows(root);
+}
+
+// 길드원 줄 그리기 (정렬 상태 반영, No.는 항상 1,2,3… 순서로 고정)
+function renderMemberRows(root) {
+    const { data, sort } = root._sheet;
+    const { header, colIdx } = data;
+    const tbody = root.querySelector('.member-table tbody');
+    tbody.innerHTML = '';
+
+    sortedMembers(data, sort).forEach((row, rowIndex) => {
+        const tr = document.createElement('tr');
+        colIdx.forEach(i => {
+            const name = header[i];
+            const raw = (row[i] || '').trim();
+            const text = raw || '-';
+            const td = document.createElement('td');
+
+            if (name === '닉네임') {
+                td.className = 'cell-nick';
+                const wrap = document.createElement('div');
+                wrap.className = 'nick-wrap';
+                wrap.appendChild(makeCell('span', Array.from(text)[0] || '?', 'nick-avatar'));
+                wrap.appendChild(makeCell('span', text, 'nick-name'));
+                td.appendChild(wrap);
+            } else if (name === 'No.') {
+                td.className = 'cell-no';
+                td.textContent = String(rowIndex + 1);
+            } else if (name === '길드 직급' && raw) {
+                td.appendChild(makeCell('span', text, 'role-badge ' + roleClass(text)));
+            } else if (name === '활동 등급' && raw) {
+                td.appendChild(makeCell('span', text, 'grade-badge ' + gradeClass(text)));
+            } else if (name === '레벨') {
+                td.className = 'cell-lv';
+                td.textContent = raw && !isNaN(raw) ? 'Lv.' + raw : text;
+            } else if (name === '누적 활동') {
+                td.className = 'cell-total';
+                td.textContent = text;
+            } else if (/^\d+주차$/.test(name)) {
+                td.className = (parseInt(raw, 10) || 0) > 0 ? 'wk-hit' : 'wk-zero';
+                td.textContent = text;
+            } else {
+                td.textContent = text;
+            }
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+
+    // 머리글의 ▲▼ 표시 갱신
+    root.querySelectorAll('.member-table th.sortable').forEach(th => {
+        const active = sort.name === th.dataset.col;
+        if (active) th.dataset.sort = sort.dir; else delete th.dataset.sort;
+        th.querySelector('.sort-ind').textContent = active ? (sort.dir === 'asc' ? '▲' : '▼') : '↕';
+        th.setAttribute('aria-sort', active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+    });
+}
+
 function renderGuildSheet(data, root) {
     const { header, colIdx, members, footer, title, subtitle, stats } = data;
+    root._sheet = { data, sort: { name: null, dir: null } };
 
     if (title) root.querySelector('.sheet-title').textContent = title;
     root.querySelector('.sheet-subtitle').textContent = subtitle;
@@ -216,52 +326,27 @@ function renderGuildSheet(data, root) {
 
     const headRow = document.createElement('tr');
     colIdx.forEach(i => {
-        const th = makeCell('th', header[i]);
-        if (header[i] === '닉네임') th.className = 'cell-nick';
-        else if (header[i] === 'No.') th.className = 'cell-no';
+        const name = header[i];
+        const th = makeCell('th', name);
+        if (name === '닉네임') th.className = 'cell-nick';
+        else if (name === 'No.') th.className = 'cell-no';
+        else if (sortTypeOf(name)) {
+            th.className = 'sortable';
+            th.dataset.col = name;
+            th.tabIndex = 0;
+            th.setAttribute('role', 'button');
+            th.appendChild(makeCell('span', '↕', 'sort-ind'));
+            th.addEventListener('click', () => toggleSort(root, name));
+            th.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSort(root, name); }
+            });
+        }
         headRow.appendChild(th);
     });
     thead.appendChild(headRow);
 
     // 길드원 줄
-    members.forEach(row => {
-        const tr = document.createElement('tr');
-        colIdx.forEach(i => {
-            const name = header[i];
-            const raw = (row[i] || '').trim();
-            const text = raw || '-';
-            const td = document.createElement('td');
-
-            if (name === '닉네임') {
-                td.className = 'cell-nick';
-                const wrap = document.createElement('div');
-                wrap.className = 'nick-wrap';
-                wrap.appendChild(makeCell('span', Array.from(text)[0] || '?', 'nick-avatar'));
-                wrap.appendChild(makeCell('span', text, 'nick-name'));
-                td.appendChild(wrap);
-            } else if (name === 'No.') {
-                td.className = 'cell-no';
-                td.textContent = text;
-            } else if (name === '길드 직급' && raw) {
-                td.appendChild(makeCell('span', text, 'role-badge ' + roleClass(text)));
-            } else if (name === '활동 등급' && raw) {
-                td.appendChild(makeCell('span', text, 'grade-badge ' + gradeClass(text)));
-            } else if (name === '레벨') {
-                td.className = 'cell-lv';
-                td.textContent = raw && !isNaN(raw) ? 'Lv.' + raw : text;
-            } else if (name === '누적 활동') {
-                td.className = 'cell-total';
-                td.textContent = text;
-            } else if (/^\d+주차$/.test(name)) {
-                td.className = (parseInt(raw, 10) || 0) > 0 ? 'wk-hit' : 'wk-zero';
-                td.textContent = text;
-            } else {
-                td.textContent = text;
-            }
-            tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-    });
+    renderMemberRows(root);
 
     // 합계 줄
     if (footer) {

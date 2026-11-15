@@ -86,6 +86,10 @@ const INFO_MENUS = [
     },
 ];
 
+// ── 표 정렬 순서 (앞쪽일수록 높은 등급) ──
+const ROLE_ORDER = ['길드장', '부길드장', '리더', '정예길드원', '일반길드원'];
+const GRADE_ORDER = ['다이아', '플래티넘', '골드', '실버', '관심필요', '겜접음'];
+
 // true: 미리보기용 더미 데이터 / false: 위 구글 시트 주소에서 실제 데이터 불러오기
 // (실제 사이트에 올릴 때는 false로 바꿔주세요)
 const USE_DUMMY_DATA = false;
