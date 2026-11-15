@@ -145,20 +145,28 @@
         [data-theme="dark"] .grade-silver { background: #3a3d44; color: #cbd5e1; }
         [data-theme="dark"] .grade-bronze { background: #5a2d12; color: #fed7aa; }
 
-        /* 로비 탭 (공식 홈페이지 글 바로가기) */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .news-card { position: relative; background: var(--surface); border-radius: 14px; padding: 22px 20px 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; }
+        /* 로비 탭 카드 */
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 380px)); justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .news-card { position: relative; display: block; width: 100%; text-align: left; font-family: inherit; color: var(--text-main); background: var(--surface); border: none; border-radius: 14px; padding: 26px 22px 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .news-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.14); }
         .news-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--news-color, var(--accent)); }
-        .news-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .news-head h3 { margin: 0; font-size: 18px; }
-        .news-more { font-size: 13px; color: var(--tab-text); text-decoration: none; }
-        .news-more[href]:hover { color: var(--news-color, var(--accent)); }
-        .news-list { list-style: none; margin: 0; padding: 0; }
-        .news-item a { display: flex; justify-content: space-between; gap: 12px; padding: 10px 10px; border-radius: 8px; text-decoration: none; color: var(--text-main); font-size: 14px; }
-        .news-item a[href] { cursor: pointer; }
-        .news-item a[href]:hover { background: var(--th-bg); }
-        .news-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .news-date { color: var(--tab-text); font-size: 12px; flex-shrink: 0; align-self: center; }
+        .news-card-title { font-size: 18px; font-weight: bold; margin: 0 0 8px; }
+        .news-card-desc { font-size: 14px; color: var(--tab-text); margin: 0 0 14px; }
+        .news-card-go { font-size: 13px; font-weight: bold; color: var(--news-color, var(--accent)); }
+
+        /* 공지사항 탭 */
+        .notice-list { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .notice-card { background: var(--surface); border-radius: 14px; padding: 24px 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 5px solid var(--accent); scroll-margin-top: 20px; }
+        .notice-card.flash { animation: noticeFlash 1.4s ease; }
+        @keyframes noticeFlash { 0%, 100% { box-shadow: 0 4px 10px rgba(0,0,0,0.08); } 30% { box-shadow: 0 0 0 4px var(--accent); } }
+        .notice-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+        .notice-head h3 { margin: 0; font-size: 20px; }
+        .notice-date { color: var(--tab-text); font-size: 13px; flex-shrink: 0; }
+        .notice-body { white-space: pre-line; line-height: 1.8; font-size: 15px; margin: 0; }
+
+        /* 우측 하단 플로팅 버튼 */
+        .home-fab { position: fixed; right: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(0,0,0,0.25); z-index: 1000; transition: transform 0.15s ease, background 0.15s ease; }
+        .home-fab:hover { transform: scale(1.08); background: var(--accent-hover); }
 
         @media (max-width: 700px) {
             .info-layout { flex-direction: column; }
@@ -175,6 +183,7 @@
 
     <div class="tab-menu">
         <button id="btn-lobby" class="tab-btn active" data-tab="lobby">🏠 로비</button>
+        <button id="btn-notice" class="tab-btn" data-tab="notice">📢 공지사항</button>
         <button id="btn-info" class="tab-btn" data-tab="info">📖 정보</button>
         <button id="btn-accuracy" class="tab-btn" data-tab="accuracy">🎯 명중 계산</button>
         <button id="btn-gacha" class="tab-btn" data-tab="gacha">🎰 가챠 시뮬레이션</button>
@@ -226,10 +235,18 @@
     <div id="lobby" class="tab-content active">
         <div class="lobby-title">
             <h3>🧛‍♂️ 뱀피르 소식</h3>
-            <p>공식 홈페이지의 글을 클릭하면 해당 글로 이동합니다</p>
+            <p>카드를 누르면 자세한 내용을 볼 수 있어요</p>
         </div>
-        <p id="newsDummyNote" class="info-empty" style="display:none; padding:0 0 15px;">※ 예시 글입니다. 스크립트의 LOBBY_NEWS에 실제 글 주소를 넣어주세요</p>
         <div id="newsGrid" class="news-grid"></div>
+    </div>
+
+    <!-- 공지사항 탭 -->
+    <div id="notice" class="tab-content">
+        <div class="lobby-title">
+            <h3>📢 공지사항</h3>
+            <p>길드 공지를 확인하세요</p>
+        </div>
+        <div id="noticeList" class="notice-list"></div>
     </div>
 
     <!-- 정보 탭 (길드 활동 정리) -->
@@ -278,6 +295,11 @@
             </div>
         </div>
     </div>
+
+    <!-- 공식 홈페이지 바로가기 (우측 하단 플로팅) -->
+    <a class="home-fab" href="https://vampir.netmarble.com" target="_blank" rel="noopener noreferrer" title="뱀피르 공식 홈페이지" aria-label="뱀피르 공식 홈페이지로 이동">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/></svg>
+    </a>
 
     <script>
         // ── 데이터 영역: 보스를 추가/수정할 땐 여기만 건드리면 됩니다 ──
@@ -352,83 +374,65 @@
             document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
         }
 
-        // ── 로비 탭: 공식 홈페이지 글 바로가기 (여기만 고치면 됩니다) ──
-        // boardUrl = '더보기' 눌렀을 때 가는 게시판 주소, posts = 보여줄 글 목록 (url에 실제 글 주소)
-        const LOBBY_NEWS = [
+        // ── 공지사항 내용 (여기만 고치면 됩니다) ──
+        const NOTICES = [
             {
-                title: '공지', icon: '📢', color: '#cc0000', boardUrl: '#',
-                posts: [
-                    { title: '예시 공지 제목 1', date: '11.14', url: '#' },
-                    { title: '예시 공지 제목 2', date: '11.12', url: '#' },
-                    { title: '예시 공지 제목 3', date: '11.10', url: '#' },
-                ]
-            },
-            {
-                title: '업데이트 안내', icon: '🛠', color: '#3b82c4', boardUrl: '#',
-                posts: [
-                    { title: '예시 업데이트 안내 1', date: '11.13', url: '#' },
-                    { title: '예시 업데이트 안내 2', date: '11.06', url: '#' },
-                    { title: '예시 업데이트 안내 3', date: '10.30', url: '#' },
-                ]
-            },
-            {
-                title: '개발자 노트', icon: '📝', color: '#8b5cf6', boardUrl: '#',
-                posts: [
-                    { title: '예시 개발자 노트 1', date: '11.11', url: '#' },
-                    { title: '예시 개발자 노트 2', date: '11.04', url: '#' },
-                    { title: '예시 개발자 노트 3', date: '10.28', url: '#' },
-                ]
+                key: 'schedule',
+                title: '스케줄 공지',
+                date: '2026.11.15',
+                body: '※ 예시 내용입니다. 이 자리에 이번 주 스케줄 공지를 적어주세요.\n\n- 월요일 21:00  예시 일정 1\n- 수요일 20:00  예시 일정 2\n- 토요일 21:30  예시 일정 3',
             },
         ];
 
-        // http(s) 주소만 링크로 허용 (그 외는 링크 없이 글자만 표시)
-        function isSafeUrl(u) { return /^https?:\/\//i.test(u || ''); }
+        // ── 로비 카드 (누르면 공지사항 탭의 해당 공지로 이동) ──
+        const LOBBY_CARDS = [
+            { title: '스케줄 공지', icon: '📅', color: '#cc0000', desc: '이번 주 스케줄을 확인하세요', noticeKey: 'schedule' },
+        ];
 
-        function makeLink(text, url, className) {
-            const a = document.createElement('a');
-            a.className = className || '';
-            if (isSafeUrl(url)) {
-                a.href = url;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-            }
-            if (text !== undefined) a.textContent = text;
-            return a;
-        }
-
-        function renderLobbyNews() {
-            const grid = document.getElementById('newsGrid');
-            let hasPlaceholder = false;
-            grid.innerHTML = '';
-
-            LOBBY_NEWS.forEach(section => {
+        function renderNotices() {
+            const list = document.getElementById('noticeList');
+            list.innerHTML = '';
+            NOTICES.forEach(n => {
                 const card = document.createElement('div');
-                card.className = 'news-card';
-                card.style.setProperty('--news-color', section.color);
+                card.className = 'notice-card';
+                card.id = 'notice-' + n.key;
 
                 const head = document.createElement('div');
-                head.className = 'news-head';
-                head.appendChild(makeCell('h3', section.icon + ' ' + section.title));
-                head.appendChild(makeLink('더보기 →', section.boardUrl, 'news-more'));
+                head.className = 'notice-head';
+                head.appendChild(makeCell('h3', n.title));
+                head.appendChild(makeCell('span', n.date, 'notice-date'));
                 card.appendChild(head);
 
-                const ul = document.createElement('ul');
-                ul.className = 'news-list';
-                section.posts.forEach(post => {
-                    if (!isSafeUrl(post.url)) hasPlaceholder = true;
-                    const li = document.createElement('li');
-                    li.className = 'news-item';
-                    const a = makeLink(undefined, post.url);
-                    a.appendChild(makeCell('span', post.title, 'news-title'));
-                    a.appendChild(makeCell('span', post.date, 'news-date'));
-                    li.appendChild(a);
-                    ul.appendChild(li);
-                });
-                card.appendChild(ul);
-                grid.appendChild(card);
+                card.appendChild(makeCell('p', n.body, 'notice-body'));
+                list.appendChild(card);
             });
+        }
 
-            document.getElementById('newsDummyNote').style.display = hasPlaceholder ? 'block' : 'none';
+        // 공지사항 탭으로 이동해서 해당 공지로 스크롤 + 잠깐 강조
+        function goNotice(key) {
+            openTab('notice');
+            const el = document.getElementById('notice-' + key);
+            if (!el) return;
+            if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.remove('flash');
+            void el.offsetWidth;
+            el.classList.add('flash');
+        }
+
+        function renderLobbyCards() {
+            const grid = document.getElementById('newsGrid');
+            grid.innerHTML = '';
+            LOBBY_CARDS.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'news-card';
+                btn.style.setProperty('--news-color', c.color);
+                btn.appendChild(makeCell('div', c.icon + ' ' + c.title, 'news-card-title'));
+                btn.appendChild(makeCell('p', c.desc, 'news-card-desc'));
+                btn.appendChild(makeCell('span', '자세히 보기 →', 'news-card-go'));
+                btn.addEventListener('click', () => goNotice(c.noticeKey));
+                grid.appendChild(btn);
+            });
         }
 
         // ── 정보 탭: 왼쪽 메뉴 목록 (항목 추가/수정은 여기만) ──
@@ -839,7 +843,8 @@
             });
 
             buildInfoMenu();
-            renderLobbyNews();
+            renderLobbyCards();
+            renderNotices();
             loadGuildSheet();
 
             STAT_INPUT_IDS.forEach(id => {
