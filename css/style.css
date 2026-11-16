@@ -180,6 +180,19 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .site-title { cursor: pointer; user-select: none; }
 .site-title:hover { opacity: 0.8; }
 
+/* 참석(T/F) 열 아이콘 */
+.member-table th.att-col, .member-table td.att-col { min-width: 132px; }
+.att-wrap { display: inline-flex; gap: 4px; }
+.att-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; }
+.att-ok { background: #dcfce7; color: #15803d; }
+.att-no { background: #fee2e2; color: #b91c1c; }
+.att-empty { background: transparent; }
+[data-theme="dark"] .att-ok { background: #14532d; color: #bbf7d0; }
+[data-theme="dark"] .att-no { background: #5c1f1f; color: #fecaca; }
+
+/* 긴 이름: 누르면 전체 보기 */
+.nick-name.expanded { max-width: none; overflow: visible; text-overflow: clip; }
+
 /* 로비 탭 카드 */
 .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 380px)); justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; }
 .news-card { position: relative; display: block; width: 100%; text-align: left; font-family: inherit; color: var(--text-main); background: var(--surface); border: none; border-radius: 14px; padding: 26px 22px 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }

@@ -245,7 +245,7 @@ function toggleSort(root, name) {
 
 // 길드원 줄 그리기 (정렬 상태 반영, No.는 항상 1,2,3… 순서로 고정)
 function renderMemberRows(root) {
-    const { data, sort } = root._sheet;
+    const { data, sort, attCols } = root._sheet;
     const { header, colIdx } = data;
     const tbody = root.querySelector('.member-table tbody');
     tbody.innerHTML = '';
@@ -263,7 +263,11 @@ function renderMemberRows(root) {
                 const wrap = document.createElement('div');
                 wrap.className = 'nick-wrap';
                 wrap.appendChild(makeCell('span', Array.from(text)[0] || '?', 'nick-avatar'));
-                wrap.appendChild(makeCell('span', text, 'nick-name'));
+                // 이름이 길어서 '…'로 잘릴 때: 마우스를 올리면 전체 이름(title), 터치하면 펼쳐서 보기
+                const nameEl = makeCell('span', text, 'nick-name');
+                nameEl.title = text;
+                nameEl.addEventListener('click', () => nameEl.classList.toggle('expanded'));
+                wrap.appendChild(nameEl);
                 td.appendChild(wrap);
             } else if (name === 'No.') {
                 td.className = 'cell-no';
@@ -281,6 +285,10 @@ function renderMemberRows(root) {
             } else if (/^\d+주차$/.test(name)) {
                 td.className = (parseInt(raw, 10) || 0) > 0 ? 'wk-hit' : 'wk-zero';
                 td.textContent = text;
+            } else if (attCols.has(i)) {
+                td.className = 'att-col';
+                if (raw) td.appendChild(makeAttendance(raw, attCols.get(i)));
+                else td.textContent = '-';
             } else {
                 td.textContent = text;
             }
@@ -298,9 +306,51 @@ function renderMemberRows(root) {
     });
 }
 
+// ── 참석(T/F) 열: 'TTTFT' 같은 글자를 ✓ / ✕ 아이콘으로 바꿔서 보여줌 ──
+const ATT_CHECK_SVG = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const ATT_CROSS_SVG = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+// 열 이름과 상관없이, 값이 전부 T/F로만 된 열을 참석 열로 인식 (열 번호 → 가장 긴 글자 수)
+function findAttendanceColumns(header, colIdx, members) {
+    const reserved = ['No.', '닉네임', '길드 직급', '레벨', '누적 활동', '주간 평균', '활동 등급'];
+    const result = new Map();
+    colIdx.forEach(i => {
+        const name = header[i];
+        if (reserved.includes(name) || /^\d+주차$/.test(name)) return;
+        const values = members.map(row => (row[i] || '').replace(/\s+/g, '')).filter(v => v !== '');
+        if (values.length > 0 && values.every(v => /^[TFtf]+$/.test(v))) {
+            result.set(i, Math.max(...values.map(v => v.length)));
+        }
+    });
+    return result;
+}
+
+function makeAttendance(value, maxLen) {
+    const chars = Array.from(value.replace(/\s+/g, '').toUpperCase());
+    const wrap = document.createElement('div');
+    wrap.className = 'att-wrap';
+    for (let k = 0; k < maxLen; k++) {
+        const icon = document.createElement('span');
+        if (chars[k] === 'T') {
+            icon.className = 'att-icon att-ok';
+            icon.innerHTML = ATT_CHECK_SVG;
+            icon.title = (k + 1) + '번째 참석';
+        } else if (chars[k] === 'F') {
+            icon.className = 'att-icon att-no';
+            icon.innerHTML = ATT_CROSS_SVG;
+            icon.title = (k + 1) + '번째 미참';
+        } else {
+            icon.className = 'att-icon att-empty';   // 글자가 모자란 칸은 비워서 주차 위치를 맞춤
+        }
+        wrap.appendChild(icon);
+    }
+    return wrap;
+}
+
 function renderGuildSheet(data, root) {
     const { header, colIdx, members, footer, title, subtitle, stats } = data;
-    root._sheet = { data, sort: { name: null, dir: null } };
+    const attCols = findAttendanceColumns(header, colIdx, members);
+    root._sheet = { data, sort: { name: null, dir: null }, attCols };
 
     if (title) root.querySelector('.sheet-title').textContent = title;
     root.querySelector('.sheet-subtitle').textContent = subtitle;
@@ -330,6 +380,7 @@ function renderGuildSheet(data, root) {
         const th = makeCell('th', name);
         if (name === '닉네임') th.className = 'cell-nick';
         else if (name === 'No.') th.className = 'cell-no';
+        else if (attCols.has(i)) th.className = 'att-col';
         else if (sortTypeOf(name)) {
             th.className = 'sortable';
             th.dataset.col = name;
