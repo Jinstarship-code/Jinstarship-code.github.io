@@ -334,11 +334,11 @@ function makeAttendance(value, maxLen) {
         if (chars[k] === 'T') {
             icon.className = 'att-icon att-ok';
             icon.innerHTML = ATT_CHECK_SVG;
-            icon.title = (k + 1) + '번째 참석';
+            icon.title = (k + 1) + '주차 참석';
         } else if (chars[k] === 'F') {
             icon.className = 'att-icon att-no';
             icon.innerHTML = ATT_CROSS_SVG;
-            icon.title = (k + 1) + '번째 미참';
+            icon.title = (k + 1) + '주차 미참';
         } else {
             icon.className = 'att-icon att-empty';   // 글자가 모자란 칸은 비워서 주차 위치를 맞춤
         }
