@@ -128,25 +128,25 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .role-sub { background: #e9d5ff; color: #6b21a8; }
 .role-elite { background: #bfdbfe; color: #1e40af; }
 .role-lead { background: #fbcfe8; color: #9d174d; }
-.grade-warn { background: #fff3cd; color: #856404; }
+.grade-warn { background: #fecaca; color: #991b1b; }
 .grade-diamond { background: #cffafe; color: #0e7490; }
 .grade-platinum { background: #ccfbf1; color: #0f766e; }
 .grade-gold { background: #fef3c7; color: #b45309; }
 .grade-silver { background: #e5e7eb; color: #4b5563; }
 .grade-bronze { background: #fed7aa; color: #9a3412; }
-.grade-quit { background: #e5e7eb; color: #9ca3af; }
+.grade-quit { background: #4b5563; color: #ffffff; }
 [data-theme="dark"] .role-badge, [data-theme="dark"] .grade-badge { background: #3a3d44; color: #cbd5e1; }
 [data-theme="dark"] .role-leader { background: #5c4a12; color: #fde68a; }
 [data-theme="dark"] .role-sub { background: #46285e; color: #e9d5ff; }
 [data-theme="dark"] .role-elite { background: #1e3a5f; color: #bfdbfe; }
 [data-theme="dark"] .role-lead { background: #5b2342; color: #fbcfe8; }
-[data-theme="dark"] .grade-warn { background: #4a3f14; color: #ffe08a; }
+[data-theme="dark"] .grade-warn { background: #5c1f1f; color: #fecaca; }
 [data-theme="dark"] .grade-diamond { background: #164e63; color: #a5f3fc; }
 [data-theme="dark"] .grade-platinum { background: #134e4a; color: #99f6e4; }
 [data-theme="dark"] .grade-gold { background: #5c4a12; color: #fde68a; }
 [data-theme="dark"] .grade-silver { background: #3a3d44; color: #cbd5e1; }
 [data-theme="dark"] .grade-bronze { background: #5a2d12; color: #fed7aa; }
-[data-theme="dark"] .grade-quit { background: #2c2e33; color: #777; }
+[data-theme="dark"] .grade-quit { background: #6b7280; color: #ffffff; }
 
 /* 상단 '유틸리티' 드롭다운 */
 .submenu { position: fixed; display: none; min-width: 190px; padding: 6px; background: var(--surface); border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1100; }
@@ -175,6 +175,10 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .sort-ind { display: inline-block; width: 12px; margin-left: 3px; font-size: 10px; opacity: 0.45; }
 .member-table th[data-sort] { color: var(--accent); }
 .member-table th[data-sort] .sort-ind { opacity: 1; }
+
+/* 상단 제목(누르면 로비로) */
+.site-title { cursor: pointer; user-select: none; }
+.site-title:hover { opacity: 0.8; }
 
 /* 로비 탭 카드 */
 .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 380px)); justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; }

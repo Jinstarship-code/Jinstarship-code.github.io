@@ -55,6 +55,7 @@ const GACHA_CARE_GOAL = 9000;
 const UTILITY_ITEMS = [
     { key: 'accuracy', label: '🎯 명중 계산' },
     { key: 'gacha', label: '🎰 가챠 시뮬레이션' },
+    { key: 'enhance', label: '🔨 강화 시뮬레이터' },
 ];
 
 // ── 공지사항 내용 (여기만 고치면 됩니다) ──

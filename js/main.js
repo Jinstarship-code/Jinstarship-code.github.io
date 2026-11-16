@@ -10,6 +10,17 @@ function init() {
     });
 
     buildUtilityMenu();
+
+    // 상단 '뱀피르' 제목을 누르면 로비로 이동
+    const siteTitle = document.getElementById('siteTitle');
+    siteTitle.addEventListener('click', () => {
+        openTab('lobby');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    siteTitle.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); siteTitle.click(); }
+    });
+
     buildInfoMenu();
     renderLobbyCards();
     renderNotices();
