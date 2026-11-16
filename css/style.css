@@ -103,7 +103,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .stat-value { font-size: 30px; font-weight: bold; color: var(--accent); margin: 8px 0 6px; }
 .stat-caption { font-size: 12px; color: var(--tab-text); }
 
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow: auto; max-height: 72vh; }
 .swipe-hint { display: none; font-size: 12px; color: var(--tab-text); margin: -6px 0 10px; }
 .member-table { width: 100%; min-width: 780px; margin: 0; border-collapse: separate; border-spacing: 0 6px; }
 .member-table th { border: none; background: transparent; padding: 6px 10px; font-size: 12px; font-weight: bold; color: var(--tab-text); text-align: center; white-space: nowrap; }
@@ -175,6 +175,10 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .sort-ind { display: inline-block; width: 12px; margin-left: 3px; font-size: 10px; opacity: 0.45; }
 .member-table th[data-sort] { color: var(--accent); }
 .member-table th[data-sort] .sort-ind { opacity: 1; }
+
+/* 표 머리글 고정: 아래로 스크롤해도 열 제목이 위에 남아 있음 */
+.member-table thead th { position: sticky; top: 0; z-index: 5; background: var(--surface); box-shadow: 0 6px 0 0 var(--surface); }
+.member-table thead th.cell-no, .member-table thead th.cell-nick { z-index: 6; }
 
 /* 상단 제목(누르면 로비로) */
 .site-title { cursor: pointer; user-select: none; }
