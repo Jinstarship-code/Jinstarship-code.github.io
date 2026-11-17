@@ -1,5 +1,8 @@
 // 📖 정보 탭: 왼쪽 메뉴(하위 메뉴 포함) + 구글 시트(CSV) 불러와서 길드원 표 그리기
 
+// 불러온 클랜별 시트 데이터 (로비의 참여 랭킹도 이 데이터를 같이 씁니다)
+const GUILD_DATA = {};
+
 // 클랜(시트) 화면의 뼈대. 클랜마다 하나씩 복사해서 사용합니다.
 const CLAN_PANEL_HTML = `
     <div class="lobby-title">
@@ -58,11 +61,11 @@ function createInfoPanel(leaf, panelWrap) {
     if (leaf.sheetUrl === undefined) {
         panel.innerHTML = '<div class="info-card"><h3></h3><p class="info-empty">준비 중입니다.</p></div>';
         panel.querySelector('h3').textContent = leaf.label;
-        return;
+        return null;
     }
     panel.innerHTML = CLAN_PANEL_HTML;
     panel.querySelector('.clan-chip').textContent = leaf.label;
-    loadGuildSheet(leaf, panel);
+    return loadGuildSheet(leaf, panel);
 }
 
 // 메뉴 만들기. 상위 메뉴를 누르면 첫 번째 하위 메뉴가 열립니다.
@@ -71,6 +74,7 @@ function buildInfoMenu() {
     const panelWrap = document.getElementById('infoPanelWrap');
     menu.innerHTML = '';
     panelWrap.innerHTML = '';
+    const loads = [];   // 시트 불러오기 작업들 (전부 끝나면 랭킹을 그림)
 
     INFO_MENUS.forEach(item => {
         if (item.children && item.children.length) {
@@ -89,7 +93,7 @@ function buildInfoMenu() {
                 btn.dataset.info = child.key;
                 btn.addEventListener('click', () => openInfo(child.key));
                 sub.appendChild(btn);
-                createInfoPanel(child, panelWrap);
+                loads.push(createInfoPanel(child, panelWrap));
             });
             group.appendChild(sub);
             menu.appendChild(group);
@@ -98,12 +102,13 @@ function buildInfoMenu() {
             btn.dataset.info = item.key;
             btn.addEventListener('click', () => openInfo(item.key));
             menu.appendChild(btn);
-            createInfoPanel(item, panelWrap);
+            loads.push(createInfoPanel(item, panelWrap));
         }
     });
 
     const first = getInfoLeaves()[0];
     if (first) openInfo(first.key);
+    return Promise.all(loads.filter(Boolean));
 }
 
 // CSV 텍스트 -> 2차원 배열 (따옴표/쉼표/줄바꿈 처리)
@@ -430,16 +435,20 @@ async function loadGuildSheet(clan, root) {
             if (!clan.sheetUrl) {
                 console.warn('[' + clan.label + '] js/data.js의 sheetUrl이 비어 있습니다.');
                 status.textContent = '준비 중입니다.';
-                return;
+                return null;
             }
             const res = await fetch(clan.sheetUrl, { cache: 'no-store' });
             if (!res.ok) throw new Error('HTTP ' + res.status);
             text = await res.text();
         }
-        renderGuildSheet(parseGuildSheet(parseCSV(text)), root);
+        const parsed = parseGuildSheet(parseCSV(text));
+        GUILD_DATA[clan.key] = { label: clan.label, data: parsed };
+        renderGuildSheet(parsed, root);
         status.style.display = 'none';
+        return parsed;
     } catch (err) {
         console.error('[' + clan.label + '] 시트 불러오기 실패:', err);
         status.textContent = '데이터를 불러오지 못했습니다. 잠시 후 새로고침 해주세요.';
+        return null;
     }
 }

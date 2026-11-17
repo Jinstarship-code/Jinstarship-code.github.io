@@ -92,6 +92,11 @@ const INFO_MENUS = [
 const ROLE_ORDER = ['길드장', '부길드장', '리더', '정예길드원', '일반길드원'];
 const GRADE_ORDER = ['다이아', '플래티넘', '골드', '실버', '관심필요', '겜접음'];
 
+// ── 로비 참여 랭킹 ──
+// RANKING_WEEK: null = 자동 (활동이 기록된 가장 최근 주차를 '이번 주'로 봄), 숫자(예: 2) = 그 주차로 고정
+const RANKING_WEEK = null;
+const RANKING_TOP = 10;   // 몇 등까지 보여줄지 (같은 횟수는 같은 순위라서 조금 더 나올 수 있음)
+
 // true: 미리보기용 더미 데이터 / false: 위 구글 시트 주소에서 실제 데이터 불러오기
 // (실제 사이트에 올릴 때는 false로 바꿔주세요)
 const USE_DUMMY_DATA = false;

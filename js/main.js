@@ -21,7 +21,8 @@ function init() {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); siteTitle.click(); }
     });
 
-    buildInfoMenu();
+    renderRanking();                         // 처음엔 '불러오는 중'
+    buildInfoMenu().then(onGuildDataReady);  // 두 클랜 시트가 다 오면 랭킹 그리기
     renderLobbyCards();
     renderNotices();
 
