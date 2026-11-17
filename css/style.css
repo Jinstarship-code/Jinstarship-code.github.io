@@ -220,6 +220,12 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .home-fab { position: fixed; right: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(0,0,0,0.25); z-index: 1000; transition: transform 0.15s ease, background 0.15s ease; }
 .home-fab:hover { transform: scale(1.08); background: var(--accent-hover); }
 
+/* 번호·닉네임 열 고정: 오른쪽으로 스크롤해도 누구 줄인지 계속 보임 (PC/폰 공통) */
+.member-table th.cell-no, .member-table td.cell-no { position: sticky; left: 0; z-index: 3; box-sizing: border-box; width: 44px; min-width: 44px; max-width: 44px; padding-left: 4px; padding-right: 4px; }
+.member-table th.cell-nick, .member-table td.cell-nick { position: sticky; left: 44px; z-index: 3; }
+.member-table th.cell-no, .member-table th.cell-nick { background: var(--surface); }
+.member-table td.cell-nick { box-shadow: 6px 0 6px -4px rgba(0,0,0,0.2); }
+
 @media (max-width: 700px) {
     body { padding: 12px; padding-bottom: 90px; }
     h2 { font-size: 20px; margin-top: 10px; }
@@ -255,10 +261,6 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
     .member-table { min-width: 0; }
     .member-table th { font-size: 11px; padding: 6px 7px; }
     .member-table td { font-size: 12px; padding: 9px 7px; }
-    .member-table th.cell-no, .member-table td.cell-no { position: sticky; left: 0; z-index: 3; box-sizing: border-box; width: 34px; min-width: 34px; max-width: 34px; padding-left: 4px; padding-right: 4px; }
-    .member-table th.cell-nick, .member-table td.cell-nick { position: sticky; left: 34px; z-index: 3; }
-    .member-table th.cell-no, .member-table th.cell-nick { background: var(--surface); }
-    .member-table td.cell-nick { box-shadow: 6px 0 6px -4px rgba(0,0,0,0.2); }
     .nick-avatar { width: 24px; height: 24px; font-size: 11px; }
     .nick-name { max-width: 90px; font-size: 13px; }
     .nick-wrap { gap: 7px; }
