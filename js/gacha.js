@@ -55,3 +55,23 @@ function resetGachaDia() {
     gachaCarePoints = 0;
     updateGachaDisplay();
 }
+
+// ── 등급별 확률 박스 (js/data.js의 GACHA_GRADES에서 자동으로 만듦) ──
+function formatRate(rate) {
+    return String(Number(rate.toFixed(3)));   // 74.68500000001 같은 오차를 정리 (최대 소수 3자리)
+}
+
+function renderGachaRates() {
+    const list = document.getElementById('gachaRates');
+    list.innerHTML = '';
+    GACHA_GRADES.forEach(grade => {
+        const li = document.createElement('li');
+        li.className = 'rate-item';
+        li.style.setProperty('--g-bg', grade.bg);
+        li.style.setProperty('--g-fg', grade.fg || grade.bg);
+        li.appendChild(makeCell('span', '', 'rate-swatch'));
+        li.appendChild(makeCell('span', grade.name, 'rate-name'));
+        li.appendChild(makeCell('span', formatRate(grade.rate) + '%', 'rate-value'));
+        list.appendChild(li);
+    });
+}

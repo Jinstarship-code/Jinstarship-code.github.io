@@ -180,6 +180,17 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .member-table thead th { position: sticky; top: 0; z-index: 5; background: var(--surface); box-shadow: 0 6px 0 0 var(--surface); }
 .member-table thead th.cell-no, .member-table thead th.cell-nick { z-index: 6; }
 
+/* 가챠 등급별 확률 박스 */
+.gacha-rates { background: var(--surface); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 270px; min-width: 260px; }
+.gacha-rates h3 { margin: 0 0 8px; font-size: 17px; }
+.rate-list { list-style: none; margin: 0; padding: 0; }
+.rate-item { display: flex; align-items: center; gap: 10px; padding: 11px 4px; border-bottom: 1px solid var(--th-bg); }
+.rate-swatch { width: 14px; height: 14px; border-radius: 4px; background: var(--g-bg); flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15); }
+.rate-name { font-weight: bold; color: var(--g-fg); }
+.rate-value { margin-left: auto; font-weight: bold; font-variant-numeric: tabular-nums; }
+[data-theme="dark"] .rate-name { color: var(--g-bg); }
+.rate-note { margin: 12px 0 0; font-size: 12px; color: var(--tab-text); }
+
 /* 상단 제목(누르면 로비로) */
 .site-title { cursor: pointer; user-select: none; }
 .site-title:hover { opacity: 0.8; }
@@ -244,6 +255,7 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
     .info-menu::-webkit-scrollbar { display: none; }
     .info-menu-item { flex-shrink: 0; width: auto; white-space: nowrap; border-bottom: none; padding: 10px 14px; font-size: 14px; }
     .info-card { padding: 14px 12px; }
+    .gacha-rates { width: 100%; min-width: 0; }
     .info-group { display: flex; align-items: center; flex-shrink: 0; }
     .info-sub { display: flex; padding: 0; }
     .info-child { padding: 10px 14px; }

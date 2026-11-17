@@ -33,6 +33,7 @@ function init() {
     document.getElementById('gachaResetBtn').addEventListener('click', resetGachaDia);
 
     checkBosses();
+    renderGachaRates();
     updateGachaDisplay();
 }
 

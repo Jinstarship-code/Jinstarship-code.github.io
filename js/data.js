@@ -37,12 +37,13 @@ const BOSS_REGIONS = [
 const STAT_INPUT_IDS = ['stat1', 'stat2', 'stat3', 'stat4'];
 
 // ── 가챠 데이터: 확률(%)과 등급 색상 ──
+// bg/text = 뽑기 카드 색, fg = 확률 박스의 등급 글자색(라이트모드. 다크모드에서는 bg 색을 사용)
 const GACHA_GRADES = [
-    { name: '전설', rate: 0.015, bg: '#f5c518', text: '#5a4400', care: 0 },   // 황금색
-    { name: '영웅', rate: 0.2,   bg: '#9b59b6', text: '#ffffff', care: 0 },   // 보라색
-    { name: '희귀', rate: 2.1,   bg: '#5dade2', text: '#ffffff', care: 1 },   // 하늘색
-    { name: '고급', rate: 23,    bg: '#a9dc76', text: '#2d4a12', care: 3 },   // 연두색
-    { name: '일반', rate: 100 - (0.015 + 0.2 + 2.1 + 23), bg: '#d9d9d9', text: '#555555', care: 5 }, // 연회색 (나머지)
+    { name: '전설', rate: 0.015, bg: '#f5c518', text: '#5a4400', fg: '#b8860b', care: 0 },   // 황금색
+    { name: '영웅', rate: 0.2,   bg: '#9b59b6', text: '#ffffff', fg: '#8e44ad', care: 0 },   // 보라색
+    { name: '희귀', rate: 2.1,   bg: '#5dade2', text: '#ffffff', fg: '#2980b9', care: 1 },   // 하늘색
+    { name: '고급', rate: 23,    bg: '#a9dc76', text: '#2d4a12', fg: '#3f7d14', care: 3 },   // 연두색
+    { name: '일반', rate: 100 - (0.015 + 0.2 + 2.1 + 23), bg: '#d9d9d9', text: '#555555', fg: '#6b7280', care: 5 }, // 연회색 (나머지)
 ];
 
 const GACHA_COST_PER_PULL = 2000; // 11연차 1회당 다이아
