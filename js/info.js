@@ -15,6 +15,16 @@ const CLAN_PANEL_HTML = `
     <div class="sheet-stats stat-grid"></div>
     <div class="sheet-table-card info-card" style="display:none;">
         <h3>👥 길드원 활동 현황</h3>
+        <div class="member-tools">
+            <div class="tool-search">
+                <input type="text" class="tool-input" placeholder="닉네임 검색" aria-label="닉네임 검색" autocomplete="off" enterkeyhint="search">
+                <button type="button" class="tool-clear" aria-label="검색어 지우기" title="검색어 지우기" hidden>✕</button>
+            </div>
+            <select class="tool-select tool-role" aria-label="길드 직급 필터"></select>
+            <select class="tool-select tool-grade" aria-label="활동 등급 필터"></select>
+            <button type="button" class="tool-reset" disabled>필터 초기화</button>
+            <span class="tool-count"></span>
+        </div>
         <p class="swipe-hint">← 좌우로 밀어서 모든 열을 볼 수 있어요 →</p>
         <div class="table-scroll">
             <table class="member-table"><thead></thead><tbody></tbody><tfoot></tfoot></table>
@@ -250,13 +260,20 @@ function toggleSort(root, name) {
 
 // 길드원 줄 그리기 (정렬 상태 반영, No.는 항상 1,2,3… 순서로 고정)
 function renderMemberRows(root) {
-    const { data, sort, attCols } = root._sheet;
+    const { data, sort, attCols, view } = root._sheet;
     const { header, colIdx } = data;
     const tbody = root.querySelector('.member-table tbody');
     tbody.innerHTML = '';
 
-    sortedMembers(data, sort).forEach((row, rowIndex) => {
+    const rows = filterMembers(root, sortedMembers(data, sort));   // 정렬한 목록에서 검색·필터 조건에 맞는 사람만
+    // 상세 정보가 펼쳐져 있던 길드원이 검색·필터로 사라졌으면 접음
+    if (view.openId !== null && !rows.some(r => data.members.indexOf(r) === view.openId)) view.openId = null;
+
+    rows.forEach((row, rowIndex) => {
+        const rowId = data.members.indexOf(row);   // 시트에서의 원래 순번 (정렬·필터와 상관없이 같은 사람을 가리킴)
+        const isOpen = view.openId === rowId;
         const tr = document.createElement('tr');
+        if (isOpen) tr.classList.add('is-open');
         colIdx.forEach(i => {
             const name = header[i];
             const raw = (row[i] || '').trim();
@@ -268,10 +285,16 @@ function renderMemberRows(root) {
                 const wrap = document.createElement('div');
                 wrap.className = 'nick-wrap';
                 wrap.appendChild(makeCell('span', Array.from(text)[0] || '?', 'nick-avatar'));
-                // 이름이 길어서 '…'로 잘릴 때: 마우스를 올리면 전체 이름(title), 터치하면 펼쳐서 보기
+                // 마우스를 올리면 전체 이름(title), 누르면 그 길드원의 상세 정보가 펼쳐짐 (members.js)
                 const nameEl = makeCell('span', text, 'nick-name');
                 nameEl.title = text;
-                nameEl.addEventListener('click', () => nameEl.classList.toggle('expanded'));
+                nameEl.tabIndex = 0;
+                nameEl.setAttribute('role', 'button');
+                nameEl.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                nameEl.addEventListener('click', () => toggleMemberDetail(root, rowId));
+                nameEl.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMemberDetail(root, rowId); }
+                });
                 wrap.appendChild(nameEl);
                 td.appendChild(wrap);
             } else if (name === 'No.') {
@@ -300,7 +323,19 @@ function renderMemberRows(root) {
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
+        if (isOpen) tbody.appendChild(buildMemberDetailRow(root, row));   // 펼쳐진 상세 정보 (members.js)
     });
+
+    if (rows.length === 0) {
+        const tr = document.createElement('tr');
+        tr.className = 'no-result';
+        const td = document.createElement('td');
+        td.colSpan = colIdx.length;
+        td.appendChild(makeCell('div', '조건에 맞는 길드원이 없어요.', 'sticky-fill'));
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+    }
+    updateMemberTools(root, rows.length);   // 'N명 중 M명' 등 도구 상자 표시 갱신 (members.js)
 
     // 머리글의 ▲▼ 표시 갱신
     root.querySelectorAll('.member-table th.sortable').forEach(th => {
@@ -330,7 +365,7 @@ function findAttendanceColumns(header, colIdx, members) {
     return result;
 }
 
-function makeAttendance(value, maxLen) {
+function makeAttendance(value, maxLen, withLabels) {
     const chars = Array.from(value.replace(/\s+/g, '').toUpperCase());
     const wrap = document.createElement('div');
     wrap.className = 'att-wrap';
@@ -347,7 +382,15 @@ function makeAttendance(value, maxLen) {
         } else {
             icon.className = 'att-icon att-empty';   // 글자가 모자란 칸은 비워서 주차 위치를 맞춤
         }
-        wrap.appendChild(icon);
+        if (withLabels) {   // 상세 정보에서는 아이콘 아래에 '1주차' 이름표를 붙임
+            const slot = document.createElement('span');
+            slot.className = 'att-slot';
+            slot.appendChild(icon);
+            slot.appendChild(makeCell('small', (k + 1) + '주차'));
+            wrap.appendChild(slot);
+        } else {
+            wrap.appendChild(icon);
+        }
     }
     return wrap;
 }
@@ -355,7 +398,7 @@ function makeAttendance(value, maxLen) {
 function renderGuildSheet(data, root) {
     const { header, colIdx, members, footer, title, subtitle, stats } = data;
     const attCols = findAttendanceColumns(header, colIdx, members);
-    root._sheet = { data, sort: { name: null, dir: null }, attCols };
+    root._sheet = { data, sort: { name: null, dir: null }, attCols, view: { query: '', role: '', grade: '', openId: null } };   // view = 검색·필터 상태 (members.js)
 
     if (title) root.querySelector('.sheet-title').textContent = title;
     root.querySelector('.sheet-subtitle').textContent = subtitle;
@@ -400,6 +443,8 @@ function renderGuildSheet(data, root) {
         headRow.appendChild(th);
     });
     thead.appendChild(headRow);
+
+    setupMemberTools(root);   // 검색창 연결 (members.js)
 
     // 길드원 줄
     renderMemberRows(root);
