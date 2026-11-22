@@ -22,7 +22,11 @@ function init() {
     });
 
     renderRanking();                         // 처음엔 '불러오는 중'
-    buildInfoMenu().then(onGuildDataReady);  // 두 클랜 시트가 다 오면 랭킹 그리기
+    initLottery();
+    buildInfoMenu().then(() => {             // 두 클랜 시트가 다 오면 랭킹·추첨기의 길드원 불러오기 준비
+        onGuildDataReady();
+        renderLotteryImport();
+    });
     renderLobbyCards();
     renderNotices();
 

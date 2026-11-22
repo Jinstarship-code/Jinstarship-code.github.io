@@ -57,6 +57,7 @@ const UTILITY_ITEMS = [
     { key: 'accuracy', label: '🎯 명중 계산' },
     { key: 'gacha', label: '🎰 가챠 시뮬레이션' },
     { key: 'enhance', label: '🔨 강화 시뮬레이터' },
+    { key: 'lottery', label: '🎲 랜덤 추첨기' },
 ];
 
 // ── 공지사항 내용 (여기만 고치면 됩니다) ──

@@ -127,6 +127,55 @@
         </div>
     </div>
 
+    <!-- 랜덤 추첨기 탭 (유틸리티 메뉴) -->
+    <div id="lottery" class="tab-content">
+        <div class="lobby-title">
+            <h3>🎲 랜덤 추첨기</h3>
+            <p>길드 아이템 분배 추첨 · 중복 없이 원하는 인원만큼 뽑아요</p>
+        </div>
+        <div class="lt-layout">
+            <div class="lt-card lt-setup">
+                <h4>1. 참가자</h4>
+                <div id="ltImport" class="lt-import"></div>
+                <textarea id="ltNames" class="lt-textarea" rows="7" placeholder="이름을 한 줄에 하나씩 입력하세요 (쉼표로 구분해도 돼요)" aria-label="참가자 목록"></textarea>
+                <p id="ltInfo" class="lt-hint">참가자 0명</p>
+
+                <h4>2. 뽑을 인원</h4>
+                <div class="lt-row">
+                    <div class="lt-stepper">
+                        <button type="button" id="ltMinus" aria-label="한 명 줄이기">−</button>
+                        <input type="number" id="ltWinners" value="1" min="1" inputmode="numeric" aria-label="뽑을 인원">
+                        <button type="button" id="ltPlus" aria-label="한 명 늘리기">＋</button>
+                    </div>
+                    <span class="lt-unit">명</span>
+                </div>
+                <input type="text" id="ltTitle" class="lt-input" placeholder="추첨 이름 (선택) 예: 전설 장비 상자" maxlength="40" aria-label="추첨 이름">
+                <label class="lt-check"><input type="checkbox" id="ltExclude"> 이전 당첨자는 빼고 뽑기</label>
+
+                <div class="lt-actions">
+                    <button type="button" id="ltDraw" class="gacha-pull-btn">🎲 추첨 시작</button>
+                    <button type="button" id="ltClear" class="gacha-reset-btn">결과 초기화</button>
+                </div>
+            </div>
+
+            <div id="ltStage" class="lt-card lt-stage">
+                <canvas id="ltConfetti" class="lt-confetti"></canvas>
+                <div class="lt-reel-box"><div class="lt-reel"><span id="ltReel">추첨 대기 중</span></div></div>
+                <p id="ltStatus" class="lt-status" role="status" aria-live="polite">참가자를 입력하고 추첨을 시작하세요</p>
+                <div class="lt-actions lt-stage-actions">
+                    <button type="button" id="ltSkip" class="gacha-reset-btn" hidden>건너뛰기 ⏭</button>
+                    <button type="button" id="ltCopy" class="gacha-reset-btn" hidden>📋 결과 복사</button>
+                </div>
+                <ol id="ltWinList" class="lt-winners"></ol>
+            </div>
+        </div>
+
+        <div id="ltHistoryBox" class="lt-card lt-history" hidden>
+            <h4>🕘 추첨 기록 (이번 접속)</h4>
+            <ul id="ltHistory"></ul>
+        </div>
+    </div>
+
     <!-- 설정 탭 -->
     <div id="settings" class="tab-content">
         <div class="notice">고정된 재화 단가 리스트입니다.</div>
@@ -156,6 +205,7 @@
     <script src="js/info.js"></script>
     <script src="js/members.js"></script>
     <script src="js/ranking.js"></script>
+    <script src="js/lottery.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
