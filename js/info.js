@@ -187,6 +187,7 @@ function parseGuildSheet(rows) {
 }
 
 function roleClass(t) {
+    if (t.includes('부캐')) return 'role-alt';
     if (t.includes('부길드장')) return 'role-sub';
     if (t.includes('길드장')) return 'role-leader';
     if (t.includes('리더')) return 'role-lead';
