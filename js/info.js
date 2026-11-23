@@ -274,6 +274,12 @@ function renderMemberRows(root) {
         const isOpen = view.openId === rowId;
         const tr = document.createElement('tr');
         if (isOpen) tr.classList.add('is-open');
+        tr.classList.add('row-click');
+        // 줄 어디를 눌러도 상세 정보가 펼쳐짐 / 접힘 (글자를 드래그해서 선택하는 중이면 무시)
+        tr.addEventListener('click', () => {
+            const selection = window.getSelection ? window.getSelection().toString().trim() : '';
+            if (!selection) toggleMemberDetail(root, rowId);
+        });
         colIdx.forEach(i => {
             const name = header[i];
             const raw = (row[i] || '').trim();
@@ -285,13 +291,12 @@ function renderMemberRows(root) {
                 const wrap = document.createElement('div');
                 wrap.className = 'nick-wrap';
                 wrap.appendChild(makeCell('span', Array.from(text)[0] || '?', 'nick-avatar'));
-                // 마우스를 올리면 전체 이름(title), 누르면 그 길드원의 상세 정보가 펼쳐짐 (members.js)
+                // 마우스를 올리면 전체 이름(title). 키보드로 닉네임에서 Enter/Space를 눌러도 상세 정보가 열림 (마우스 클릭은 위의 줄 클릭이 처리)
                 const nameEl = makeCell('span', text, 'nick-name');
                 nameEl.title = text;
                 nameEl.tabIndex = 0;
                 nameEl.setAttribute('role', 'button');
                 nameEl.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                nameEl.addEventListener('click', () => toggleMemberDetail(root, rowId));
                 nameEl.addEventListener('keydown', e => {
                     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMemberDetail(root, rowId); }
                 });

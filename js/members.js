@@ -126,6 +126,10 @@ function revealDetail(root) {
     const rect = detail.getBoundingClientRect();
     if (rect.bottom > box.bottom) scroller.scrollTop += rect.bottom - box.bottom + 8;
     else if (rect.top < box.top + 40) scroller.scrollTop -= box.top + 40 - rect.top;   // 40 = 표 제목 줄 높이만큼 여유
+
+    // 표 상자가 화면보다 길 수 있어서, 상세 정보가 화면 아래로 잘려 있으면 페이지도 함께 내림
+    const after = detail.getBoundingClientRect();
+    if (after.bottom > window.innerHeight) window.scrollBy({ top: after.bottom - window.innerHeight + 16, behavior: 'smooth' });
 }
 
 function detailSection(title) {

@@ -246,8 +246,8 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .sticky-fill { text-align: center; }
 
 /* 길드원 상세 정보 (닉네임을 누르면 펼쳐짐) */
-.nick-name { cursor: pointer; }
-.nick-name:hover { text-decoration: underline; }
+.member-table tbody tr.row-click { cursor: pointer; }
+.member-table tbody tr.row-click:hover .nick-name { text-decoration: underline; }
 .nick-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 .member-table tbody tr.is-open td { background: var(--input-bg); }
 .member-table .detail-row td { padding: 0; background: transparent; text-align: left; white-space: normal; }
