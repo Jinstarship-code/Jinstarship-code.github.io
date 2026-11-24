@@ -28,7 +28,7 @@ function init() {
         renderLotteryImport();
     });
     renderLobbyCards();
-    renderNotices();
+    initSchedule();
 
     STAT_INPUT_IDS.forEach(id => {
         document.getElementById(id).addEventListener('input', checkBosses);

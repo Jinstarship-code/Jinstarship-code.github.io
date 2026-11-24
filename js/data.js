@@ -60,19 +60,19 @@ const UTILITY_ITEMS = [
     { key: 'lottery', label: '🎲 랜덤 추첨기' },
 ];
 
-// ── 공지사항 내용 (여기만 고치면 됩니다) ──
-const NOTICES = [
-    {
-        key: 'schedule',
-        title: '스케줄 공지',
-        date: '2026.11.15',
-        body: '※ 예시 내용입니다. 이 자리에 이번 주 스케줄 공지를 적어주세요.\n\n- 월요일 21:00  예시 일정 1\n- 수요일 20:00  예시 일정 2\n- 토요일 21:30  예시 일정 3',
-    },
-];
+// ── 스케줄 (가로축 = 요일, 세로축 = 시간 1시간 단위) ──
+// 구글 시트(웹에 게시한 CSV)에서 읽어옵니다. 시트 열: schedule_type, title, weekday, start_date, end_date, start_time, end_time, description
+//  - schedule_type: 반복 / 일회성   - weekday: 매일, 월요일, 월,수, 평일, 주말 …
+//  - start_date~end_date: 이 기간에만 표시 (반복에서 비워두면 계속 반복, 일회성은 그 날짜에만)
+const SCHEDULE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=1949546487&single=true&output=csv';
+const SCHEDULE_FROM = 0;    // 시간표 시작 시각 (0 = 00:00)
+const SCHEDULE_TO = 24;     // 시간표 끝 시각 (24 = 24:00)
+// 일정 막대 색: 제목마다 아래 색 중 하나가 정해져서(같은 제목은 항상 같은 색) 보입니다.
+const SCHEDULE_COLORS = ['#d64545', '#3b82c4', '#2fa67a', '#8e5bd0', '#f08a3c', '#c2528f', '#4a9ba8', '#7a8b2e'];
 
-// ── 로비 카드 (누르면 공지사항 탭의 해당 공지로 이동) ──
+// ── 로비 카드 (누르면 해당 탭으로 이동) ──
 const LOBBY_CARDS = [
-    { title: '스케줄 공지', icon: '📅', color: '#cc0000', desc: '이번 주 스케줄을 확인하세요', noticeKey: 'schedule' },
+    { title: '스케줄', icon: '📅', color: '#cc0000', desc: '이번 주 길드 일정을 확인하세요' },
 ];
 
 // ── 정보 탭 왼쪽 메뉴 ──

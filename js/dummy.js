@@ -52,3 +52,13 @@ function buildDummyCSV() {
     lines.push(line(foot));
     return lines.join('\n');
 }
+
+// 미리보기용 더미 스케줄 CSV (USE_DUMMY_DATA가 true일 때만 사용)
+function buildDummyScheduleCSV() {
+    return [
+        'schedule_type,title,weekday,start_date,end_date,start_time,end_time,description',
+        '반복,월드보스,매일,,,20:00,20:10,매일 진행하는 월드보스',
+        '반복,길드 콘텐츠,일요일,,,21:00,22:00,월드보스 종료 후 진행',
+        '일회성,특별 이벤트,매일,2026-11-24,2026-11-26,15:00,16:00,해당 날짜에만 진행하는 이벤트',
+    ].join('\n');
+}

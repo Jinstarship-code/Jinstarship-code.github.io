@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>뱀피르</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124">
 </head>
 <body>
 
@@ -15,7 +15,7 @@
 
     <div class="tab-menu">
         <button id="btn-lobby" class="tab-btn active" data-tab="lobby">🏠 로비</button>
-        <button id="btn-notice" class="tab-btn" data-tab="notice">📢 공지사항</button>
+        <button id="btn-schedule" class="tab-btn" data-tab="schedule">📅 스케줄</button>
         <button id="btn-info" class="tab-btn" data-tab="info">📖 길드 운영</button>
         <button id="btn-utility" class="tab-btn" aria-haspopup="true" aria-expanded="false">🧰 유틸리티 ▾</button>
         <button id="btn-settings" class="tab-btn" data-tab="settings">⚙ 설정</button>
@@ -99,13 +99,19 @@
         </div>
     </div>
 
-    <!-- 공지사항 탭 -->
-    <div id="notice" class="tab-content">
+    <!-- 스케줄 탭 -->
+    <div id="schedule" class="tab-content">
         <div class="lobby-title">
-            <h3>📢 공지사항</h3>
-            <p>길드 공지를 확인하세요</p>
+            <h3>📅 스케줄</h3>
+            <p id="scheduleWeek">이번 주 길드 일정</p>
         </div>
-        <div id="noticeList" class="notice-list"></div>
+        <div class="sch-nav">
+            <button type="button" id="schPrev" class="sch-nav-btn">◀ 이전 주</button>
+            <button type="button" id="schToday" class="sch-nav-btn">이번 주</button>
+            <button type="button" id="schNext" class="sch-nav-btn">다음 주 ▶</button>
+        </div>
+        <div id="scheduleBoard" class="sch-board"></div>
+        <div id="scheduleDetail" class="sch-detail"></div>
     </div>
 
     <!-- 정보 탭 (길드 활동 정리) -->
@@ -195,17 +201,18 @@
         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/></svg>
     </a>
 
-    <script src="js/data.js"></script>
-    <script src="js/common.js"></script>
-    <script src="js/menu.js"></script>
-    <script src="js/accuracy.js"></script>
-    <script src="js/gacha.js"></script>
-    <script src="js/lobby.js"></script>
-    <script src="js/dummy.js"></script>
-    <script src="js/info.js"></script>
-    <script src="js/members.js"></script>
-    <script src="js/ranking.js"></script>
-    <script src="js/lottery.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/data.js?v=20261124"></script>
+    <script src="js/common.js?v=20261124"></script>
+    <script src="js/menu.js?v=20261124"></script>
+    <script src="js/accuracy.js?v=20261124"></script>
+    <script src="js/gacha.js?v=20261124"></script>
+    <script src="js/lobby.js?v=20261124"></script>
+    <script src="js/schedule.js?v=20261124"></script>
+    <script src="js/dummy.js?v=20261124"></script>
+    <script src="js/info.js?v=20261124"></script>
+    <script src="js/members.js?v=20261124"></script>
+    <script src="js/ranking.js?v=20261124"></script>
+    <script src="js/lottery.js?v=20261124"></script>
+    <script src="js/main.js?v=20261124"></script>
 </body>
 </html>
