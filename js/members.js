@@ -210,14 +210,17 @@ function buildMemberDetailRow(root, row) {
         box.appendChild(section);
     }
 
-    // 참석(T/F) 열마다: 주차별 ✓ / ✕
+    // 참석(T/F) 열마다: 주차별 ✓ / ✕ — PC는 한 줄에 나란히, 폰은 2열 (배치는 CSS .dt-att-list가 담당)
+    const attList = document.createElement('div');
+    attList.className = 'dt-att-list';
     colIdx.filter(i => attCols.has(i)).forEach(i => {
         const raw = (row[i] || '').trim();
         const section = detailSection(header[i] + ' 참석 기록');
         if (raw) section.appendChild(makeAttendance(raw, raw.replace(/\s+/g, '').length, true));
         else section.appendChild(makeCell('div', '기록 없음', 'dt-none'));
-        box.appendChild(section);
+        attList.appendChild(section);
     });
+    if (attList.children.length) box.appendChild(attList);
 
     td.appendChild(box);
     tr.appendChild(td);
