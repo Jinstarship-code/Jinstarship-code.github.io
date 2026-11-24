@@ -65,7 +65,7 @@ const UTILITY_ITEMS = [
 //  - schedule_type: 반복 / 일회성   - weekday: 매일, 월요일, 월,수, 평일, 주말 …
 //  - start_date~end_date: 이 기간에만 표시 (반복에서 비워두면 계속 반복, 일회성은 그 날짜에만)
 const SCHEDULE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=1949546487&single=true&output=csv';
-const SCHEDULE_FROM = 0;    // 시간표 시작 시각 (0 = 00:00)
+const SCHEDULE_FROM = 6;    // 시간표 시작 시각 (6 = 06:00, 00:00~05:59는 표시 안 함)
 const SCHEDULE_TO = 24;     // 시간표 끝 시각 (24 = 24:00)
 // 일정 막대 색: 제목마다 아래 색 중 하나가 정해져서(같은 제목은 항상 같은 색) 보입니다.
 const SCHEDULE_COLORS = ['#d64545', '#3b82c4', '#2fa67a', '#8e5bd0', '#f08a3c', '#c2528f', '#4a9ba8', '#7a8b2e'];
