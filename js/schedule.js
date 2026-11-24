@@ -43,10 +43,17 @@ function schParseDays(str) {
     return days;
 }
 
-function schHashColor(title) {
-    let h = 0;
-    for (const ch of title) h = (h * 31 + ch.codePointAt(0)) >>> 0;
-    return SCHEDULE_COLORS[h % SCHEDULE_COLORS.length];
+// 제목마다 서로 다른 색을 줌: 시트에 처음 나온 순서대로 SCHEDULE_COLORS를 하나씩 쓰고, 모자라면 겹치지 않는 색을 새로 만듦.
+// 같은 제목은 항상 같은 색 (제목 → 색)
+function schAssignColors(items) {
+    const colorOf = new Map();
+    items.forEach(it => {
+        if (!colorOf.has(it.title)) {
+            const n = colorOf.size;
+            colorOf.set(it.title, n < SCHEDULE_COLORS.length ? SCHEDULE_COLORS[n] : `hsl(${Math.round((n * 137.508) % 360)}, 55%, 42%)`);
+        }
+        it.color = colorOf.get(it.title);
+    });
 }
 
 function parseScheduleSheet(rows) {
@@ -75,9 +82,9 @@ function parseScheduleSheet(rows) {
             endDate: schParseDate(get(row, idx.ed)),
             start, end,
             desc: get(row, idx.desc),
-            color: schHashColor(title),
         });
     });
+    schAssignColors(items);
     return items;
 }
 
