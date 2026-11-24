@@ -272,6 +272,9 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .dt-none { font-size: 13px; color: var(--tab-text); }
 .att-slot { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
 .att-slot small { font-size: 10px; color: var(--tab-text); }
+/* 상세 정보의 참석 기록 배치: PC는 모두 한 줄에 나란히(공간이 모자라면 아래로), 폰은 2열 */
+.dt-att-list { display: flex; flex-wrap: wrap; gap: 4px 28px; }
+.dt-att-list .dt-sec { margin: 0 0 12px; }
 
 /* 랜덤 추첨기 */
 .lt-layout { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: flex-start; max-width: 1100px; margin: 0 auto 20px; }
@@ -395,6 +398,9 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
     .info-menu::-webkit-scrollbar { display: none; }
     .info-menu-item { flex-shrink: 0; width: auto; white-space: nowrap; border-bottom: none; padding: 10px 14px; font-size: 14px; }
     .info-card { padding: 14px 12px; }
+    .dt-att-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; }
+    .dt-att-list .att-wrap { gap: 3px; }
+    .dt-att-list .att-slot small { font-size: 9px; }
     .lt-reel { height: 92px; }
     .lt-reel span { font-size: 26px; }
     .lt-stage { min-height: 320px; }
