@@ -473,3 +473,158 @@ th, td { border: 2px solid var(--border-color); padding: 10px; text-align: cente
 .sch-detail-card p { margin: 3px 0; font-size: 14px; line-height: 1.6; }
 .sch-detail-card .sch-tag { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 10px; background: var(--th-bg); color: var(--tab-text); font-size: 12px; font-weight: normal; }
 .sch-detail-hint { text-align: center; font-size: 12px; color: var(--tab-text); }
+
+/* ───────── 로비: 길드 라운지 대시보드 (화이트 + 버건디) ───────── */
+.lg-wrap {
+    --lg-wine: #7a1226; --lg-wine-d: #5b0d1c; --lg-wine-soft: #fbeaed; --lg-ivory: #fbf8f4;
+    --lg-line: #ece3e4; --lg-sub: #85777b; --lg-text: #2d2427;
+    --lg-gold: #d4a73a; --lg-silver: #a9b2bd; --lg-bronze: #b9783f;
+    --lg-blue: #2b6cb0; --lg-blue-soft: #e5effa;
+    --lg-up: #178a4c; --lg-down: #d13434; --lg-flat: #8b9099;
+    --lg-card: #ffffff; --lg-seg: #f4eeee; --lg-shadow: 0 6px 18px rgba(90, 20, 35, 0.09);
+    max-width: 1240px; margin: 0 auto; color: var(--lg-text);
+}
+[data-theme="dark"] .lg-wrap {
+    --lg-wine: #e07585; --lg-wine-d: #c45a6a; --lg-wine-soft: #3d2429; --lg-ivory: #2a2024;
+    --lg-line: #3a3236; --lg-sub: #a99ca0; --lg-text: #ece6e8;
+    --lg-blue: #7db3ec; --lg-blue-soft: #243344;
+    --lg-up: #4cc884; --lg-down: #ff7b7b; --lg-flat: #9aa0a8;
+    --lg-card: #24262b; --lg-seg: #2f2c2f; --lg-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* 헤더 */
+.lg-header { position: relative; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 18px 24px; margin-bottom: 22px; border-radius: 18px; overflow: hidden;
+    background: linear-gradient(105deg, var(--lg-ivory), var(--lg-card) 70%);
+    border: 1px solid var(--lg-line); border-bottom: 3px solid var(--lg-wine); box-shadow: var(--lg-shadow); }
+.lg-header::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(122, 18, 38, 0.035) 14px 15px); }
+.lg-header > * { position: relative; }
+.lg-emblem { display: flex; width: 62px; height: 62px; flex: none; }
+.lg-emblem svg { width: 100%; height: 100%; }
+.lg-head-tt { flex: 1 1 260px; min-width: 0; }
+.lg-head-tt h3 { margin: 0; font-size: 28px; letter-spacing: 3px; color: var(--lg-wine); line-height: 1.1; font-family: Georgia, 'Times New Roman', serif; }
+.lg-head-sub { margin: 6px 0 0; display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 2px; color: var(--lg-sub); font-weight: bold; }
+.lg-head-sub::before { content: ''; width: 26px; height: 1px; background: var(--lg-wine); }
+.lg-season { padding: 2px 9px; border-radius: 10px; background: var(--lg-wine); color: #fff; letter-spacing: 1px; }
+[data-theme="dark"] .lg-season { color: #2a1015; }
+.lg-head-msg { margin: 6px 0 0; font-size: 13px; color: var(--lg-sub); }
+.lg-stats { display: flex; gap: 22px; flex-wrap: wrap; }
+.lg-stat { padding-left: 14px; border-left: 1px solid var(--lg-line); }
+.lg-stat small { display: block; font-size: 11px; color: var(--lg-sub); }
+.lg-stat b { font-size: 15px; color: var(--lg-text); white-space: nowrap; }
+
+/* 카드 3열 */
+.lg-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.lg-card { background: var(--lg-card); border-radius: 20px; padding: 20px 18px 16px; box-shadow: var(--lg-shadow); border: 1px solid var(--lg-line); border-top: 4px solid var(--lg-wine); min-width: 0;
+    animation: lgRise 0.6s ease both; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.lg-card:nth-child(2) { animation-delay: 0.08s; }
+.lg-card:nth-child(3) { animation-delay: 0.16s; }
+@media (hover: hover) { .lg-card:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(90, 20, 35, 0.16); } }
+@keyframes lgRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+.lg-card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.lg-ico { display: flex; flex: none; width: 40px; height: 40px; color: var(--lg-wine); }
+.lg-ico svg { width: 100%; height: 100%; }
+.lg-card-tt { flex: 1; min-width: 0; }
+.lg-card-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lg-card-line h4 { margin: 0; font-size: 20px; color: var(--lg-text); }
+.lg-tag { padding: 2px 8px; border-radius: 6px; background: var(--lg-wine); color: #fff; font-size: 10px; font-weight: bold; letter-spacing: 1px; }
+[data-theme="dark"] .lg-tag { color: #2a1015; }
+.lg-card-sub { margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--lg-sub); }
+.lg-top { flex: none; padding: 3px 10px; border: 1px solid var(--lg-wine); border-radius: 12px; color: var(--lg-wine); font-size: 11px; font-weight: bold; }
+
+/* 필터 (주차 / 클랜) */
+.lg-controls { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; min-height: 0; }
+.lg-weeks { position: relative; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.lg-chip, .lg-seg button { flex: none; border: 1px solid var(--lg-line); background: var(--lg-card); color: var(--lg-sub); border-radius: 14px; padding: 5px 12px; font-size: 12px; font-weight: bold; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background 0.2s, color 0.2s; }
+.lg-chip:hover, .lg-seg button:hover { color: var(--lg-wine); border-color: var(--lg-wine); }
+.lg-chip.on, .lg-seg button.on { background: var(--lg-wine); border-color: var(--lg-wine); color: #fff; }
+[data-theme="dark"] .lg-chip.on, [data-theme="dark"] .lg-seg button.on { color: #2a1015; }
+.lg-seg { display: inline-flex; gap: 4px; background: var(--lg-seg); border-radius: 16px; padding: 3px; max-width: 100%; overflow-x: auto; align-self: flex-start; }
+.lg-seg button { border-color: transparent; background: transparent; }
+
+/* TOP 3 포디움 */
+.lg-podium { display: flex; justify-content: center; align-items: flex-end; gap: 6px; padding: 18px 0 14px; background: radial-gradient(ellipse at 50% 85%, rgba(212, 167, 58, 0.14), transparent 65%); }
+.lg-slot { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; }
+.lg-medal { position: relative; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); border: 3px solid rgba(255, 255, 255, 0.85);
+    background: radial-gradient(circle at 30% 25%, var(--mt, #ccc), var(--mb, #999) 60%, var(--md, #666)); box-shadow: 0 0 0 3px var(--mg, rgba(0, 0, 0, 0.08)), 0 6px 14px var(--ms, rgba(0, 0, 0, 0.2)); }
+.lg-medal b { font-weight: 800; }
+.lg-slot.first .lg-medal { width: 68px; height: 68px; font-size: 28px; animation: lgGlow 3.2s ease-in-out infinite; }
+.lg-slot.first { margin-bottom: 14px; }
+.lg-slot.m1 { --mt: #ffe9a3; --mb: #d4a73a; --md: #94700f; --mg: rgba(212, 167, 58, 0.22); --ms: rgba(212, 167, 58, 0.45); --pn: var(--lg-wine); }
+.lg-slot.m2 { --mt: #f3f6f9; --mb: #a9b2bd; --md: #6d7782; --mg: rgba(169, 178, 189, 0.25); --ms: rgba(120, 130, 142, 0.35); --pn: #4b5563; }
+.lg-slot.m3 { --mt: #f6d0aa; --mb: #b9783f; --md: #7c4a1f; --mg: rgba(185, 120, 63, 0.22); --ms: rgba(185, 120, 63, 0.4); --pn: #8a5a33; }
+.lg-crown { position: absolute; top: -17px; left: 50%; width: 30px; transform: translateX(-50%); color: var(--lg-gold); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25)); }
+.lg-crown svg { display: block; width: 100%; }
+@keyframes lgGlow { 0%, 100% { box-shadow: 0 0 0 3px var(--mg), 0 6px 14px var(--ms); } 50% { box-shadow: 0 0 0 7px var(--mg), 0 8px 22px var(--ms); } }
+.lg-pname { max-width: 100%; padding: 4px 10px; border-radius: 10px; background: var(--pn, #555); color: #fff; font-size: 12px; font-weight: bold; line-height: 1.25; word-break: break-all; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; box-sizing: border-box; }
+.lg-pval { font-size: 15px; font-weight: 800; color: var(--lg-text); }
+.lg-pval.up, .lg-val.up { color: var(--lg-up); }
+.lg-pval.down, .lg-val.down { color: var(--lg-down); }
+.lg-pval.flat, .lg-val.flat { color: var(--lg-flat); }
+
+/* 클랜 배지: 난너만패 = 블루, 왜나만패 = 버건디 */
+.lg-badge { display: inline-block; max-width: 100%; padding: 2px 9px; border-radius: 8px; font-size: 11px; font-weight: bold; white-space: nowrap; box-sizing: border-box; }
+.lg-badge.blue { background: var(--lg-blue-soft); color: var(--lg-blue); border: 1px solid rgba(43, 108, 176, 0.25); }
+.lg-badge.wine { background: var(--lg-wine-soft); color: var(--lg-wine); border: 1px solid rgba(122, 18, 38, 0.22); }
+.lg-badge.gray { background: var(--lg-seg); color: var(--lg-sub); border: 1px solid var(--lg-line); }
+
+/* 4위부터 목록 */
+.lg-rows { border-top: 1px solid var(--lg-line); }
+.lg-row { display: flex; align-items: center; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--lg-line); }
+.lg-no { flex: none; width: 26px; text-align: center; font-size: 15px; font-weight: bold; color: var(--lg-sub); }
+.lg-no.m1 { color: var(--lg-gold); } .lg-no.m2 { color: var(--lg-silver); } .lg-no.m3 { color: var(--lg-bronze); }
+.lg-av { flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--lg-wine); color: #fff; font-size: 12px; font-weight: bold; }
+[data-theme="dark"] .lg-av { color: #2a1015; }
+.lg-mid { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap; }
+.lg-name { flex: 0 1 auto; min-width: 0; max-width: 100%; font-weight: bold; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lg-val { flex: none; min-width: 52px; text-align: right; font-weight: 800; font-size: 14px; }
+.lg-empty { margin: 30px 0; text-align: center; font-size: 13px; color: var(--lg-sub); }
+
+/* 카드 아래 */
+.lg-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; margin-top: 12px; font-size: 12px; color: var(--lg-sub); }
+.lg-more { border: none; background: none; padding: 4px 0; color: var(--lg-wine); font-weight: bold; font-size: 14px; cursor: pointer; font-family: inherit; }
+.lg-more:hover { text-decoration: underline; }
+.lg-foot-note { flex-basis: 100%; margin: 0; font-size: 11px; }
+.lg-note { margin: 18px 0 0; text-align: center; font-size: 12px; color: var(--lg-sub); }
+.lg-note::before, .lg-note::after { content: '◆'; margin: 0 10px; font-size: 8px; color: var(--lg-wine); vertical-align: middle; }
+
+/* 반응형: 넓은 화면 3열 → 좁은 화면 1열 (가로 스크롤 없음) */
+@media (max-width: 1060px) {
+    .lg-cards { grid-template-columns: minmax(0, 1fr); max-width: 640px; margin: 0 auto; }
+    .lg-stats { width: 100%; }
+}
+@media (max-width: 520px) {
+    .lg-header { padding: 14px 16px; gap: 12px; }
+    .lg-emblem { width: 50px; height: 50px; }
+    .lg-head-tt h3 { font-size: 22px; letter-spacing: 2px; }
+    .lg-stats { gap: 12px; }
+    .lg-stat { padding-left: 10px; }
+    .lg-card { padding: 16px 12px 14px; }
+    .lg-medal { width: 46px; height: 46px; font-size: 19px; }
+    .lg-slot.first .lg-medal { width: 58px; height: 58px; font-size: 24px; }
+    .lg-pname { font-size: 11px; padding: 3px 6px; }
+}
+
+/* 동작 줄이기 설정을 켠 사용자는 움직임 효과를 끔 */
+@media (prefers-reduced-motion: reduce) {
+    .lg-card, .lg-slot.first .lg-medal { animation: none; }
+    .lg-card { transition: none; }
+    .lg-card:hover { transform: none; }
+}
+
+/* 모바일: 카드 3개를 하나의 카드로 합치고 위 탭으로 전환 */
+.lg-merge { display: contents; }
+.lg-tabs { display: none; }
+@keyframes lgFade { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 720px) {
+    .lg-merge { display: block; overflow: hidden; background: var(--lg-card); border: 1px solid var(--lg-line); border-top: 4px solid var(--lg-wine); border-radius: 20px; box-shadow: var(--lg-shadow); }
+    .lg-tabs { display: flex; background: var(--lg-ivory); border-bottom: 1px solid var(--lg-line); }
+    .lg-tab { flex: 1 1 0; min-width: 0; padding: 13px 4px 11px; border: none; border-bottom: 3px solid transparent; background: none; color: var(--lg-sub); font-family: inherit; font-size: 14px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    .lg-tab.on { color: var(--lg-wine); border-bottom-color: var(--lg-wine); background: var(--lg-card); }
+    .lg-cards { display: block; max-width: none; margin: 0; }
+    .lg-card { display: none; border: none; border-radius: 0; box-shadow: none; animation: none; padding: 16px 12px 14px; }
+    .lg-card.on { display: block; animation: lgFade 0.3s ease both; }
+    .lg-card:hover { transform: none; box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) { .lg-card.on { animation: none; } }

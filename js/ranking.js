@@ -52,13 +52,12 @@ function renderRanking() {
     const listBox = document.getElementById('rankList');
     const weeksBox = document.getElementById('rankWeeks');
     const clansBox = document.getElementById('rankClans');
-    const title = document.getElementById('rankTitle');
     const sub = document.getElementById('rankSub');
     const foot = document.getElementById('rankFoot');
-    weeksBox.innerHTML = ''; clansBox.innerHTML = ''; listBox.innerHTML = ''; foot.textContent = '';
+    weeksBox.innerHTML = ''; clansBox.innerHTML = ''; listBox.innerHTML = ''; foot.innerHTML = '';
 
     if (!rankReady) {
-        listBox.appendChild(makeCell('p', '불러오는 중...', 'info-empty'));
+        listBox.appendChild(makeCell('p', '불러오는 중...', 'lg-empty'));
         return;
     }
 
@@ -68,9 +67,8 @@ function renderRanking() {
     const weeks = [...new Set(entries.flatMap(e => Object.keys(e.weeks).map(Number)))].sort((a, b) => a - b);
 
     if (leaves.length === 0 || weeks.length === 0) {
-        title.textContent = '🏆 참여 랭킹';
         sub.textContent = '';
-        listBox.appendChild(makeCell('p', '랭킹을 불러오지 못했어요.', 'info-empty'));
+        listBox.appendChild(makeCell('p', '랭킹을 불러오지 못했어요.', 'lg-empty'));
         return;
     }
 
@@ -81,8 +79,11 @@ function renderRanking() {
     // 주차 버튼
     weeks.forEach(w => {
         const label = w + '주차' + (w === nowWeek ? ' · 이번 주' : '');
-        weeksBox.appendChild(makeRankButton(label, w === week, 'rk-chip', () => { rankWeek = w; renderRanking(); }));
+        weeksBox.appendChild(makeRankButton(label, w === week, 'lg-chip', () => { rankWeek = w; renderRanking(); }));
     });
+
+    const onChip = weeksBox.querySelector('.on');   // 선택한 주차가 보이도록 칩 줄만 옆으로 이동
+    if (onChip) weeksBox.scrollLeft = onChip.offsetLeft - weeksBox.clientWidth / 2 + onChip.offsetWidth / 2;
 
     // 클랜 선택 버튼 (전체 / 클랜별)
     clansBox.style.display = leaves.length > 1 ? 'inline-flex' : 'none';
@@ -97,42 +98,28 @@ function renderRanking() {
     const ranked = pool.map(e => ({ e, value: e.weeks[week], rank: 1 + pool.filter(o => o.weeks[week] > e.weeks[week]).length }));
     const shown = ranked.filter(r => r.rank <= RANKING_TOP).slice(0, 20);
 
-    title.textContent = '🏆 ' + week + '주차 참여 랭킹 TOP ' + RANKING_TOP;
     const scope = rankClan === 'all' ? leaves.map(l => l.label).join(' + ') + (leaves.length > 1 ? ' 합산' : '') : leaves.find(l => l.key === rankClan).label;
     sub.textContent = scope + ' · ' + week + '주차 활동 횟수 기준';
 
     if (shown.length === 0) {
-        listBox.appendChild(makeCell('p', week + '주차 활동 기록이 아직 없어요.', 'info-empty'));
+        listBox.appendChild(makeCell('p', week + '주차 활동 기록이 아직 없어요.', 'lg-empty'));
+    } else {
+        lgRenderList(listBox, shown.map(({ e, value, rank }) => ({
+            rank, name: e.name, clan: e.clanLabel, tone: lgToneOf(e.clanLabel), valueText: value.toLocaleString() + '회',
+        })));
     }
-    const max = shown.length ? shown[0].value : 1;
-    shown.forEach(({ e, value, rank }) => {
-        const row = document.createElement('div');
-        row.className = 'rk-row';
-        row.appendChild(makeCell('span', String(rank), 'rk-no' + (rank <= 3 ? ' m' + rank : '')));
-        row.appendChild(makeCell('span', Array.from(e.name)[0] || '?', 'rk-av'));
 
-        const mid = document.createElement('div');
-        mid.className = 'rk-mid';
-        const top = document.createElement('div');
-        top.className = 'rk-top';
-        const nameEl = makeCell('span', e.name, 'rk-name');
-        nameEl.title = e.name;
-        top.appendChild(nameEl);
-        top.appendChild(makeCell('span', e.clanLabel, 'rk-clan c' + (e.clanIndex % 3)));
-        mid.appendChild(top);
-        const bar = document.createElement('div');
-        bar.className = 'rk-bar';
-        const fill = document.createElement('i');
-        fill.style.width = Math.max(4, Math.round(value / max * 100)) + '%';
-        bar.appendChild(fill);
-        mid.appendChild(bar);
-        row.appendChild(mid);
-
-        row.appendChild(makeCell('span', value.toLocaleString() + '회', 'rk-cnt'));
-        listBox.appendChild(row);
-    });
-
+    // 카드 아래: 전체 랭킹 보기(= 정보 탭의 길드원 표) + 인원수
+    const inScope = entries.filter(e => e.name && (rankClan === 'all' || e.clanKey === rankClan)).length;
+    lgSetTotal(entries.filter(e => e.name).length);
+    const go = document.createElement('button');
+    go.type = 'button';
+    go.className = 'lg-more';
+    go.textContent = '전체 랭킹 보기 →';
+    go.addEventListener('click', () => openTab('info'));
+    foot.appendChild(go);
+    foot.appendChild(makeCell('span', '총 ' + inScope + '명', 'lg-count'));
     const notes = ['같은 횟수는 같은 순위예요.'];
     if (leaves.length < totalClans) notes.push('일부 클랜 데이터를 불러오지 못했어요.');
-    foot.textContent = notes.join(' ');
+    foot.appendChild(makeCell('p', notes.join(' '), 'lg-foot-note'));
 }

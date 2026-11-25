@@ -70,11 +70,6 @@ const SCHEDULE_TO = 24;     // 시간표 끝 시각 (24 = 24:00)
 // 일정 막대 색: 제목마다 아래 색 중 하나가 정해져서(같은 제목은 항상 같은 색) 보입니다.
 const SCHEDULE_COLORS = ['#d64545', '#3b82c4', '#2fa67a', '#8e5bd0', '#f08a3c', '#c2528f', '#4a9ba8', '#7a8b2e'];
 
-// ── 로비 카드 (누르면 해당 탭으로 이동) ──
-const LOBBY_CARDS = [
-    { title: '스케줄', icon: '📅', color: '#cc0000', desc: '이번 주 길드 일정을 확인하세요' },
-];
-
 // ── 정보 탭 왼쪽 메뉴 ──
 // children = 하위 메뉴, sheetUrl = 그 클랜 구글 시트(웹에 게시한 CSV)의 주소
 //  - 시트 탭마다 주소가 다릅니다: 구글 시트 > 파일 > 공유 > 웹에 게시 > 해당 시트 탭 선택 > 쉼표로 구분된 값(.csv) > 게시
@@ -97,6 +92,17 @@ const GRADE_ORDER = ['다이아', '플래티넘', '골드', '실버', '관심필
 // RANKING_WEEK: null = 자동 (활동이 기록된 가장 최근 주차를 '이번 주'로 봄), 숫자(예: 2) = 그 주차로 고정
 const RANKING_WEEK = null;
 const RANKING_TOP = 10;   // 몇 등까지 보여줄지 (같은 횟수는 같은 순위라서 조금 더 나올 수 있음)
+
+// ── 로비 대시보드 (GUILD LOUNGE): 전투력 TOP / 주간 성장 TOP ──
+// 시트(웹에 게시한 CSV) 구조: 머리글 줄에 '구분 · 순위 · 닉네임'이 세 덩어리로 있어요.
+//   첫 번째 덩어리(C~E열) = LOUNGE_CLANS[0] 클랜, 두 번째(F~H열) = LOUNGE_CLANS[1] 클랜, 세 번째(J~N열) = 두 클랜 종합 성장(전투력 증감, 소속클랜 열 포함)
+const LOUNGE_SEASON = 'SEASON 01';   // 헤더에 표시되는 시즌 문구
+const LOUNGE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxj_D0lg3phUHl6LeXs20jGc9Rnu-W8F29wN56nYUUBBSV9CNlOMnv0hHtbROVFYK1qf6mcq13eGj2/pub?gid=961849500&single=true&output=csv';
+// tone: 클랜 배지 색 (blue = 블루 계열, wine = 버건디 계열)
+const LOUNGE_CLANS = [
+    { name: '난너만패', tone: 'blue' },
+    { name: '왜나만패', tone: 'wine' },
+];
 
 // true: 미리보기용 더미 데이터 / false: 위 구글 시트 주소에서 실제 데이터 불러오기
 // (실제 사이트에 올릴 때는 false로 바꿔주세요)
